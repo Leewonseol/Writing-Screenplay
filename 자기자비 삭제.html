@@ -1896,97 +1896,7 @@ ${basePrompt}`;
                     });
                 }, 0);
             } else if (currentIndex === 2) {
-                // 3단계: 시나리오 프롬프트 생성기
-                html += `<div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; line-height: 1.6; margin: 0; padding: 20px; background-color: #f8f9fa; color: #212529;">
-    <div style="max-width: 800px; margin: auto; background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-        
-        <!-- 예시 토글 버튼 -->
-        <div style="text-align: center; margin-bottom: 20px;">
-            <button id="toggle-example-btn" type="button" style="padding: 10px 20px; background-color: #6c757d; color: white; border: none; border-radius: 6px; font-size: 1rem; font-weight: bold; cursor: pointer; transition: background-color 0.2s;">예시 보기</button>
-        </div>
-        
-        <!-- 예시 내용 (처음에는 숨김) -->
-        <div id="example-content" style="display: none;">
-            <div style="border: 1px solid #ced4da; border-radius: 8px; padding: 20px; margin-bottom: 30px; background-color: #e9ecef; border-color: #adb5bd;">
-                <div style="font-size: 1.5rem; font-weight: bold; margin-bottom: 20px; color: #6c757d;">장면 1</div>
-                <div style="margin-bottom: 15px;">
-                    <label style="display: block; font-weight: bold; margin-bottom: 5px; color: #495057;">장소 및 시간 (Scene Heading)</label>
-                    <input type="text" value="비행기 안 - 밤" readonly style="width: 100%; padding: 10px; border: 1px solid #ced4da; border-radius: 4px; box-sizing: border-box; font-size: 1rem;">
-                </div>
-                <div style="margin-bottom: 15px;">
-                    <label style="display: block; font-weight: bold; margin-bottom: 5px; color: #495057;">등장인물 (Characters)</label>
-                    <input type="text" value="대수, 마리아, 스튜어디스" readonly style="width: 100%; padding: 10px; border: 1px solid #ced4da; border-radius: 4px; box-sizing: border-box; font-size: 1rem;">
-                </div>
-                <div style="margin-bottom: 15px;">
-                    <label style="display: block; font-weight: bold; margin-bottom: 5px; color: #495057;">장면 요약 (Summary)</label>
-                    <textarea readonly style="width: 100%; padding: 10px; border: 1px solid #ced4da; border-radius: 4px; box-sizing: border-box; font-size: 1rem; height: 150px; resize: vertical;">대수가 스페인 여성 마리아에게 작업을 걸다가 가족 사진을 보여주며 머쓱해진다. 대화가 끝난 후, 비행기가 난기류를 만나 심하게 흔들린다.</textarea>
-                </div>
-                <div style="margin-bottom: 15px;">
-                    <label style="display: block; font-weight: bold; margin-bottom: 5px; color: #495057;">내용 (대사 및 지문)</label>
-                    <textarea readonly style="width: 100%; padding: 10px; border: 1px solid #ced4da; border-radius: 4px; box-sizing: border-box; font-size: 1rem; background-color: #f8f9fa; color: #495057; font-family: Consolas, monaco, monospace; white-space: pre-wrap; height: 300px;">마리아
-몇 나라나 다녀보셨어요?
-
-대수
-한 40개국쯤? 어려서부터 점쟁이들이, 어디 한군데 눌러 살지 못한다고 했대요. 그런 신세를 한국인들은 '역과 역 사이를 달리는 말의 운명'이라고 부르죠. 그래서 고등학교 졸업하자마자 바로 여행사에 취직했어요. ....쎄비야, 시내에 사세요?
-
-마리아
-(눈이 휘둥그레져)
-어떻게 알았죠, 거기서 온 거?
-
-대수, 새로 도착한 맥주를 따서 두 컵에 나눠 따른 다음 마리아에게 하나를 건넨다.
-
-대수
-(씩 웃더니, 맥주를 꿀꺽꿀꺽 마시고 나서)
-....아까 입국신고서 쓰시는 걸 잠깐 훔쳐봤거든요.
-(중략)
-작년엔 한 달만에 들어가서 안아주니까 자기 아빠는 전화기 안에 있다면서 수화기 붙들고 아빠 불러달라고 막 울고 그랬어요.
-
-마리아
-(웃으며)
-....가서 딸한테 자랑하세요. 매력적인 스페인 여성의 유혹을 받았지만 일언지하에 거절했다고.
-
-머쓱해진 대수, 잔을 들어 단숨에 비워버린다. (중략) 다시 맥주를 주문하려는 순간 덜컹, 컵 안의 맥주가 출렁대기 시작한다.
-
-스튜어디스 (방송)
-지금 저희 비행기는 기류 변화가 심한 곳을 통과하고 있사오니 승객 여러분께서는 좌석 벨트를....
-
-대수 얼굴의 클로즈업 - 상하좌우로 심하게 요동치며 치밀어 오르는 구역질을 억지로 참는다.
-
-대수 (소리)
-....'구름 위를 걷듯이 편안하다'는 구두 광고가 있지만, 천만에.... 구름 위는 몹시 불안하다.</textarea>
-                </div>
-            </div>
-        </div>
-
-        <div id="scene-container">
-            <div class="scene-card" style="border: 1px solid #ced4da; border-radius: 8px; padding: 20px; margin-bottom: 30px; background-color: #fff;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                    <div style="font-size: 1.5rem; font-weight: bold; color: #007bff;">장면 1</div>
-                    <button class="remove-scene-btn" type="button" data-scene-id="1" style="padding: 6px 12px; background-color: #dc3545; color: white; border: none; border-radius: 4px; font-size: 0.9rem; font-weight: bold; cursor: pointer; transition: background-color 0.2s;">삭제</button>
-                </div>
-                <div style="margin-bottom: 15px;">
-                    <label for="scene-heading-1" style="display: block; font-weight: bold; margin-bottom: 5px; color: #495057;">장소 및 시간 (Scene Heading)</label>
-                    <input type="text" id="scene-heading-1" placeholder="예: 카페 - 낮" style="width: 100%; padding: 10px; border: 1px solid #ced4da; border-radius: 4px; box-sizing: border-box; font-size: 1rem;">
-                </div>
-                <div style="margin-bottom: 15px;">
-                    <label for="characters-1" style="display: block; font-weight: bold; margin-bottom: 5px; color: #495057;">등장인물 (Characters)</label>
-                    <input type="text" id="characters-1" placeholder="예: 영희, 철수" style="width: 100%; padding: 10px; border: 1px solid #ced4da; border-radius: 4px; box-sizing: border-box; font-size: 1rem;">
-                </div>
-                <div style="margin-bottom: 15px;">
-                    <label for="summary-1" style="display: block; font-weight: bold; margin-bottom: 5px; color: #495057;">장면 요약 (Summary)</label>
-                    <textarea id="summary-1" placeholder="이 장면의 목표는 무엇인가요? 장면이 끝났을 때 무엇이 변해야 하나요?" style="width: 100%; padding: 10px; border: 1px solid #ced4da; border-radius: 4px; box-sizing: border-box; font-size: 1rem; height: 150px; resize: vertical;"></textarea>
-                </div>
-                <div style="margin-bottom: 15px;">
-                    <label for="content-1" style="display: block; font-weight: bold; margin-bottom: 5px; color: #495057;">내용 (대사 및 지문)</label>
-                    <textarea id="content-1" placeholder="이곳에 장면의 구체적인 대사와 행동을 자유롭게 작성해 주세요." style="width: 100%; padding: 10px; border: 1px solid #ced4da; border-radius: 4px; box-sizing: border-box; font-size: 1rem; height: 150px; resize: vertical;"></textarea>
-                </div>
-            </div>
-        </div>
-
-        <button id="add-scene-btn" type="button" style="display: block; width: 100%; padding: 12px; background-color: #007bff; color: white; border: none; border-radius: 4px; font-size: 1.1rem; font-weight: bold; cursor: pointer; transition: background-color 0.2s;">새 장면 추가</button>
-
-    </div>
-</div>`;
+              
                 
                 containerDiv.innerHTML = html;
                 
@@ -3149,50 +3059,207 @@ ${basePrompt}`;
             const screeningContainer = document.querySelector('.phq9-screening') || document.querySelector('.gad7-screening');
             if (!screeningContainer) return;
             
-            // 프로그램 시작 화면으로 교체
+            // 프로그램 시작 화면으로 교체 - 새로운 시나리오 챗봇 로직 적용
             screeningContainer.innerHTML = `
                 <div class="program-start" style="max-width: 800px; margin: 0 auto; padding: 20px;">
-                    <h1 style="text-align: center; color: #2c3e50; margin-bottom: 30px;">🚀 시나리오 치료 프로그램 시작</h1>
+                    <h1 style="text-align: center; color: #3f3d56; margin-bottom: 30px;">🎬 시나리오 쓰기 치료 챗봇</h1>
                     
-                    <div style="background: #e8f5e8; padding: 20px; border-radius: 12px; margin-bottom: 30px; border: 2px solid #27ae60;">
-                        <h3 style="color: #27ae60; margin-bottom: 15px;">✅ 준비 완료</h3>
-                        <p style="line-height: 1.6; margin-bottom: 15px;">
-                            PHQ-9 및 GAD-7 검사가 완료되었습니다.
-                        </p>
-                        <p style="line-height: 1.6; margin-bottom: 0;">
-                            이제 시나리오 치료 프로그램을 시작할 수 있습니다.
-                        </p>
+                    <div id="chatbox" style="
+                        width: 100%;
+                        background: #fff;
+                        padding: 20px;
+                        border-radius: 12px;
+                        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+                        overflow-y: auto;
+                        height: 420px;
+                        margin-bottom: 15px;
+                        border: 1px solid #e5e7eb;
+                    ">
+                        <div class="bot" style="
+                            color: #3f3d56;
+                            margin: 8px 0;
+                            font-weight: bold;
+                        ">
+                            챗봇: 안녕하세요 🙂 시나리오 쓰기 치료를 시작해볼까요?<br>
+                            먼저 어떤 단계부터 진행할지 선택해 주세요.
+                        </div>
                     </div>
-                    
-                    <div style="text-align: center; margin-top: 30px;">
-                        <button id="beginProgramBtn" style="
-                            background: #3498db;
+
+                    <div id="input-area" style="
+                        display: flex;
+                        width: 100%;
+                        margin-bottom: 20px;
+                    ">
+                        <input id="user-input" type="text" placeholder="메시지를 입력하세요..." style="
+                            flex: 1;
+                            padding: 10px;
+                            border-radius: 8px;
+                            border: 1px solid #ccc;
+                            font-size: 14px;
+                        " />
+                        <button onclick="sendMessage()" style="
+                            padding: 10px 15px;
+                            margin-left: 10px;
+                            background-color: #3f3d56;
                             color: white;
                             border: none;
-                            padding: 15px 30px;
                             border-radius: 8px;
                             cursor: pointer;
-                            font-size: 16px;
-                            font-weight: bold;
-                        ">프로그램 시작하기</button>
+                            font-size: 14px;
+                        ">보내기</button>
+                    </div>
+
+                    <div id="script-output" style="
+                        width: 100%;
+                        background-color: #eef4ff;
+                        padding: 15px;
+                        border-radius: 10px;
+                        border: 1px solid #cfd8dc;
+                        font-size: 14px;
+                    ">
+                        <h3 style="margin-top: 0; color: #2c3e50;">📝 시나리오 요약</h3>
+                        <p id="script-text">아직 작성된 시나리오가 없습니다.</p>
                     </div>
                 </div>
             `;
             
-            // 프로그램 시작 버튼 이벤트 리스너
-            const beginBtn = document.getElementById('beginProgramBtn');
-            if (beginBtn) {
-                beginBtn.addEventListener('click', function() {
-                    // 활성화된 검사 화면 제거 (PHQ-9 또는 GAD-7)
-                    const screening = document.querySelector('.phq9-screening') || document.querySelector('.gad7-screening');
-                    if (screening) screening.remove();
-                    // 메인 프로그램 화면 표시
-                    const mainContainer = document.querySelector('.container');
-                    if (mainContainer) mainContainer.style.display = '';
-                    // 초기 단계 설정
-                    if (typeof updateStage === 'function') updateStage();
-                });
+            // 시나리오 챗봇 로직 초기화
+            initScenarioChatbot();
+        }
+        
+        // 시나리오 챗봇 초기화 및 로직
+        function initScenarioChatbot() {
+            const chatbox = document.getElementById("chatbox");
+            const userInput = document.getElementById("user-input");
+            const scriptText = document.getElementById("script-text");
+
+            // 세 단계 정의
+            const stages = {
+                "1": {
+                    name: "과거 재연극 제작",
+                    desc: "과거의 외상적 사건을 그대로 재연하여 감정을 해소하는 단계예요.",
+                    steps: [
+                        "그때 있었던 갈등 장면을 구체적으로 묘사해 주세요. (언제, 어디서, 누구와, 무슨 일이 있었나요?)",
+                        "그 상황에서 느꼈던 감정은 무엇이었나요?",
+                        "지금 다시 그 장면을 쓰면서 어떤 생각이 드나요?"
+                    ]
+                },
+                "2": {
+                    name: "긍정적 재경험극 제작",
+                    desc: "과거의 사건을 원하는 방향으로 재구성해 새로운 시나리오로 써보는 단계예요.",
+                    steps: [
+                        "과거 사건 중 바꾸고 싶은 장면을 묘사해 주세요.",
+                        "그 장면을 어떻게 다시 쓰고 싶나요? (원하는 대사, 행동 포함)",
+                        "다시 쓴 장면 속에서 느끼는 감정을 표현해 주세요."
+                    ]
+                },
+                "3": {
+                    name: "미래지향적 영화 제작",
+                    desc: "내가 변화되기를 바라는 미래의 모습을 시나리오로 작성하는 단계예요.",
+                    steps: [
+                        "당신이 바라는 이상적인 미래 상황을 묘사해 주세요.",
+                        "그 미래에서 당신이 하고 있는 행동과 대사를 써 주세요.",
+                        "그 미래 장면을 상상할 때 드는 감정을 적어 주세요."
+                    ]
+                }
+            };
+
+            let currentStage = null;
+            let currentStep = -1;
+            let scenario = { "과거 재연극 제작": [], "긍정적 재경험극 제작": [], "미래지향적 영화 제작": [] };
+
+            function addMessage(sender, message) {
+                const messageDiv = document.createElement("div");
+                messageDiv.className = sender;
+                messageDiv.style.cssText = sender === "bot" 
+                    ? "color: #3f3d56; margin: 8px 0; font-weight: bold;" 
+                    : "color: #0077cc; margin: 8px 0; text-align: right;";
+                messageDiv.innerHTML = `${sender === "bot" ? "챗봇" : "사용자"}: ${message}`;
+                chatbox.appendChild(messageDiv);
+                chatbox.scrollTop = chatbox.scrollHeight;
             }
+
+            function sendMessage() {
+                const message = userInput.value.trim();
+                if (!message) return;
+
+                addMessage("user", message);
+
+                // 단계 번호(1, 2, 3)가 입력되면 언제든지 해당 단계로 이동
+                if (stages[message]) {
+                    // 기존 단계가 진행 중이었다면 저장
+                    if (currentStage && currentStep >= 0 && currentStep < currentStage.steps.length) {
+                        addMessage("bot", `💾 ${currentStage.name} 단계의 진행 상황이 저장되었습니다.`);
+                    }
+                    
+                    // 새로운 단계 선택
+                    currentStage = stages[message];
+                    currentStep = 0;
+                    addMessage("bot", `선택한 단계: <b>${currentStage.name}</b><br>${currentStage.desc}`);
+                    setTimeout(() => {
+                        addMessage("bot", currentStage.steps[currentStep]);
+                    }, 600);
+                    userInput.value = "";
+                    return;
+                }
+
+                // 현재 단계가 선택되지 않은 경우 → 단계 선택 모드
+                if (!currentStage) {
+                    addMessage("bot", "원하는 단계 번호(1~3) 중 하나를 입력해 주세요.");
+                    userInput.value = "";
+                    return;
+                }
+
+                // 현재 단계의 시나리오 작성
+                scenario[currentStage.name].push(message);
+                currentStep++;
+
+                // 현재 단계에서 남은 질문이 있으면 계속 진행
+                if (currentStep < currentStage.steps.length) {
+                    setTimeout(() => {
+                        addMessage("bot", currentStage.steps[currentStep]);
+                    }, 600);
+                } else {
+                    addMessage("bot", `✔️ ${currentStage.name} 단계가 완료되었습니다.`);
+                    updateScript();
+                    setTimeout(() => {
+                        addMessage("bot", "다음에 진행할 단계를 선택해 주세요 (1: 과거 | 2: 긍정적 재경험 | 3: 미래)");
+                    }, 800);
+                    currentStage = null;
+                    currentStep = -1;
+                }
+                userInput.value = "";
+            }
+
+            function updateScript() {
+                scriptText.innerHTML = `
+                    <b>과거 재연극 제작:</b><br>${scenario["과거 재연극 제작"].map((s, i) => `Step ${i + 1}: ${s}`).join("<br>") || "아직 작성 안 됨"}<br><br>
+                    <b>긍정적 재경험극 제작:</b><br>${scenario["긍정적 재경험극 제작"].map((s, i) => `Step ${i + 1}: ${s}`).join("<br>") || "아직 작성 안 됨"}<br><br>
+                    <b>미래지향적 영화 제작:</b><br>${scenario["미래지향적 영화 제작"].map((s, i) => `Step ${i + 1}: ${s}`).join("<br>") || "아직 작성 안 됨"}
+                `;
+            }
+
+            // 전역 함수로 등록
+            window.sendMessage = sendMessage;
+            
+            // Enter 키로 메시지 전송
+            userInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    sendMessage();
+                }
+            });
+
+            // 초기 단계 안내 메시지 출력
+            setTimeout(() => {
+                addMessage("bot",
+                    "다음 중 하나를 선택해 시작해 주세요:<br><br>" +
+                    "1️⃣ 과거 재연극 제작<br>" +
+                    "2️⃣ 긍정적 재경험극 제작<br>" +
+                    "3️⃣ 미래지향적 영화 제작<br><br>" +
+                    "⚡ <b>각 단계는 자유롭게 오갈 수 있어요!</b><br>" +
+                    "💡 언제든지 1, 2, 3을 입력하면 다른 단계로 이동할 수 있습니다."
+                );
+            }, 1500);
         }
         
         // GAD-7 불안증상 검사 함수
