@@ -3145,11 +3145,12 @@ ${basePrompt}`;
         
         // 프로그램 시작 함수
         function startProgram() {
-            const phq9Container = document.querySelector('.phq9-screening');
-            if (!phq9Container) return;
+            // PHQ-9 또는 GAD-7 결과 컨테이너 중 존재하는 것을 사용
+            const screeningContainer = document.querySelector('.phq9-screening') || document.querySelector('.gad7-screening');
+            if (!screeningContainer) return;
             
             // 프로그램 시작 화면으로 교체
-            phq9Container.innerHTML = `
+            screeningContainer.innerHTML = `
                 <div class="program-start" style="max-width: 800px; margin: 0 auto; padding: 20px;">
                     <h1 style="text-align: center; color: #2c3e50; margin-bottom: 30px;">🚀 시나리오 치료 프로그램 시작</h1>
                     
@@ -3182,12 +3183,14 @@ ${basePrompt}`;
             const beginBtn = document.getElementById('beginProgramBtn');
             if (beginBtn) {
                 beginBtn.addEventListener('click', function() {
-                    // PHQ-9 검사 화면 제거
-                    document.querySelector('.phq9-screening').remove();
+                    // 활성화된 검사 화면 제거 (PHQ-9 또는 GAD-7)
+                    const screening = document.querySelector('.phq9-screening') || document.querySelector('.gad7-screening');
+                    if (screening) screening.remove();
                     // 메인 프로그램 화면 표시
-                    document.querySelector('.container').style.display = '';
+                    const mainContainer = document.querySelector('.container');
+                    if (mainContainer) mainContainer.style.display = '';
                     // 초기 단계 설정
-                    updateStage();
+                    if (typeof updateStage === 'function') updateStage();
                 });
             }
         }
