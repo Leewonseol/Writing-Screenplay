@@ -3199,9 +3199,9 @@ ${basePrompt}`;
                 totalEl.textContent = score;
                 const [label, cls] = getSeverityClass(score);
                 sevTag.textContent = label;
-                sevTag.className = 'gad7-sev ' + cls;
+                sevTag.className = 'phq9-sev ' + cls;
 
-                // 인구통계 정보 표시
+                // 인구통계 정보 표시 (PHQ-9 데이터에서 가져오기)
                 if (phq9Data.demographics && Object.keys(phq9Data.demographics).length > 0) {
                     const demographics = phq9Data.demographics;
                     const genderText = ['남성', '여성', '기타'][demographics.gender] || '미입력';
@@ -3337,31 +3337,6 @@ ${basePrompt}`;
 
                 // PHQ-9 9번 질문(자해/자살 생각)에서 1점 이상일 때 위기 상담 연락처 안내는 이미 위에서 표시됨
 
-                // 인구통계 정보 표시
-                if (gad7Data.demographics && Object.keys(gad7Data.demographics).length > 0) {
-                    const demographics = gad7Data.demographics;
-                    const genderText = ['남성', '여성', '기타'][demographics.gender] || '미입력';
-                    const ageText = demographics.age ? `${demographics.age}세` : '미입력';
-                    const participationText = demographics.groupParticipation === 'yes' ? '참여 희망' : '개인 진행';
-                    const regionText = demographics.region || '해당 없음';
-                    
-                    // 인구통계 정보를 표시할 div 생성
-                    const demoInfoDiv = document.createElement('div');
-                    demoInfoDiv.style.cssText = 'margin-top: 16px; padding: 16px; background: #f0f9ff; border-radius: 8px; border-left: 4px solid #3b82f6;';
-                    demoInfoDiv.innerHTML = `
-                        <h4 style="margin: 0 0 12px; color: #1e40af; font-size: 1.1em;">📊 참여자 정보</h4>
-                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; font-size: 0.95em;">
-                            <div><strong>성별:</strong> ${genderText}</div>
-                            <div><strong>연령:</strong> ${ageText}</div>
-                            <div><strong>집단 참여:</strong> ${participationText}</div>
-                            ${demographics.groupParticipation === 'yes' ? `<div><strong>거주지역:</strong> ${regionText}</div>` : ''}
-                        </div>
-                    `;
-                    
-                    // advice 요소 다음에 인구통계 정보 추가
-                    advice.parentNode.insertBefore(demoInfoDiv, advice.nextSibling);
-                }
-
                 // 결과 화면으로 전환
                 progressDiv.style.display = 'none';
                 resultDiv.style.display = 'block';
@@ -3374,9 +3349,7 @@ ${basePrompt}`;
                     portal.innerHTML = '<strong>💡 심리상담 포털:</strong> <a href="https://www.mindinfo.kr/new/index.asp" target="_blank" style="color:#2563eb; text-decoration:none; font-weight:500;">https://www.mindinfo.kr/new/index.asp</a> ↗<br><small style="color:#6b7280;">상담심리사 찾기, 심리상담센터 찾기, 공공 심리상담 기관 및 서비스 정보 제공</small>';
                     resultDiv.appendChild(portal);
                 }
-        }
-
-
+            }
 
             document.addEventListener('change', e => {
                 if(e.target.matches('.phq9-screening input[type=radio]')) updateProgress();
@@ -3384,8 +3357,6 @@ ${basePrompt}`;
 
             // 결과 확인 버튼
             calcBtn.addEventListener('click', showResults);
-
-
 
             // 첫 번째 뒤로 가기 버튼 (진행 중)
             backBtn2.addEventListener('click', () => {
@@ -3413,8 +3384,6 @@ ${basePrompt}`;
             updateProgress();
         }
 
-        
-        
         // 프로그램 시작 함수
         function startProgram() {
             // PHQ-9 또는 GAD-7 결과 컨테이너 중 존재하는 것을 사용
