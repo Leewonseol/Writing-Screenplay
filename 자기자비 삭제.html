@@ -1949,16 +1949,18 @@ ${basePrompt}`;
                                     area.innerHTML = `<div class='summary-block'>
                                         <strong>✍️ 기획의도 작성 가이드</strong>
                                         <ul style='margin:0;padding-left:1.2em;'>
-                                            <li><b>PHQ-9 요약</b>: ${phq9Label}</li>
-                                            <li><b>기본정보 기반 목표</b>: ${stage1Brief ? stage1Brief : '1단계 기본 정보를 먼저 입력해 주세요.'}</li>
+                                                                            <li><b>PHQ-9 요약</b>: ${phq9Label}</li>
+                                <li><b>기본정보 기반 목표</b>: ${stage1Brief ? stage1Brief : '1단계 기본 정보를 먼저 입력해 주세요.'}</li>
+                                <li><b>프로그램 체험 가능 여부</b>: ${phq9Score >= 5 && phq9Score <= 9 ? '가능 (가벼운 우울 범위)' : '불가 (다른 점수 범위)'}</li>
                                         </ul>
                                     </div>`;
                                 } catch (e) {
                                     area.innerHTML = `<div class='summary-block'>
                                         <strong>✍️ 기획의도 작성 가이드</strong>
                                         <ul style='margin:0;padding-left:1.2em;'>
-                                            <li><b>PHQ-9 요약</b>: 미확인</li>
-                                            <li><b>기본정보 기반 목표</b>: 1단계 기본 정보를 먼저 입력해 주세요.</li>
+                                                                            <li><b>PHQ-9 요약</b>: 미확인</li>
+                                <li><b>기본정보 기반 목표</b>: 1단계 기본 정보를 먼저 입력해 주세요.</li>
+                                <li><b>프로그램 체험 가능 여부</b>: PHQ-9 검사 완료 후 확인 가능</li>
                                         </ul>
                                     </div>`;
                                 }
@@ -2530,15 +2532,20 @@ ${basePrompt}`;
             resultDiv.innerHTML = `
                 <div class="phq9-wrap">
                     <div class="phq9-card" style="max-width: 720px; margin: 0 auto;">
-                        <h1 class="phq9-title">PHQ-9 검사 결과 (이미 완료됨)</h1>
-                        <div class="phq9-sub">
-                            이전에 완료하신 PHQ-9 검사 결과입니다.<br>
-                            <small style="margin-top: 8px; display: block; color: #6b7280; font-size: 12px;">
-                                📋 <a href="https://www.ncmh.go.kr/ncmh/board/boardView.do?no=8834&fno=106&bn=newsView&menu_cd=04_02_02_04&bno=&pageIndex=1&search_item=&search_content=#" target="_blank" style="color: #2563eb; text-decoration: none; font-weight: 500;">
-                                    PHQ-9 한국판 표준지침 (국립정신건강센터)
-                                </a> ↗
-                            </small>
-                        </div>
+                                            <h1 class="phq9-title">PHQ-9 검사 결과 (이미 완료됨)</h1>
+                    <div class="phq9-sub">
+                        이전에 완료하신 PHQ-9 검사 결과입니다.<br>
+                        <small style="margin-top: 8px; display: block; color: #6b7280; font-size: 12px;">
+                            📋 <a href="https://www.ncmh.go.kr/ncmh/board/boardView.do?no=8834&fno=106&bn=newsView&menu_cd=04_02_02_04&bno=&pageIndex=1&search_item=&search_content=#" target="_blank" style="color: #2563eb; text-decoration: none; font-weight: 500;">
+                                PHQ-9 한국판 표준지침 (국립정신건강센터)
+                            </a> ↗
+                        </small>
+                        <small style="margin-top: 8px; display: block; color: #6b7280; font-size: 12px;">
+                            📚 <a href="https://jamanetwork.com/journals/jamapsychiatry/fullarticle/2774861" target="_blank" style="color: #2563eb; text-decoration: none; font-weight: 500;">
+                                Internet-Based Cognitive Behavioral Therapy for Depression: A Systematic Review and Individual Patient Data Network Meta-analysis
+                            </a> ↗
+                        </small>
+                    </div>
                         
                         <div class="phq9-result">
                             <div class="phq9-score">총점: <span id="phq9ResultTotal">${score}</span> / 27 <span id="phq9ResultSevTag" class="phq9-sev">결과</span></div>
@@ -2732,11 +2739,11 @@ ${basePrompt}`;
         }
 
         function getSeverityClass(score) {
-            if(score <= 4) return ['우울 아님 (0–4)', 'none'];
-            if(score <= 9) return ['가벼운 우울 (5–9)', 'mild'];
-            if(score <= 14) return ['경증 우울 (10–14)', 'mod'];
-            if(score <= 19) return ['중등도 우울 (15–19)', 'modsev'];
-            return ['심한 우울 (20–27)', 'sev'];
+            if(score <= 4) return ['정상 (0–4)', 'none'];
+            if(score <= 9) return ['가벼움 (5–9)', 'mild'];
+            if(score <= 14) return ['경함 (10–14)', 'mod'];
+            if(score <= 19) return ['중함 (15–19)', 'modsev'];
+            return ['심각함 (20–27)', 'sev'];
         }
 
         function getPHQ9DataFromStorage() {
@@ -2969,6 +2976,11 @@ ${basePrompt}`;
                                     PHQ-9 한국판 표준지침 (국립정신건강센터)
                                 </a> ↗
                             </small>
+                            <small style="margin-top: 8px; display: block; color: #6b7280; font-size: 12px;">
+                                📚 <a href="https://jamanetwork.com/journals/jamapsychiatry/fullarticle/2774861" target="_blank" style="color: #2563eb; text-decoration: none; font-weight: 500;">
+                                    Internet-Based Cognitive Behavioral Therapy for Depression: A Systematic Review and Individual Patient Data Network Meta-analysis
+                                </a> ↗
+                            </small>
                         </div>
                         
                         <div class="phq9-grid" id="phq9Grid"></div>
@@ -2976,7 +2988,7 @@ ${basePrompt}`;
 
                         
                         <div class="phq9-result" id="phq9Result" style="display: none;">
-                            <div class="phq9-score">총점: <span id="phq9Total">0</span> / 27 <span id="phq9SevTag" class="phq9-sev none">우울 아님 (0–4)</span></div>
+                            <div class="phq9-score">총점: <span id="phq9Total">0</span> / 27 <span id="phq9SevTag" class="phq9-sev none">정상 (0–4)</span></div>
                             <div id="phq9Advice" class="phq9-note" style="margin-top:8px"></div>
                             <div class="phq9-btns">
                                 <button id="phq9StartBtn" class="phq9-btn phq9-primary" disabled>프로그램 체험 시작</button>
@@ -3311,14 +3323,14 @@ ${basePrompt}`;
                     startBtn.disabled = true;
                     advice.className = 'phq9-note phq9-warn';
                     advice.innerHTML = `<strong>⚠️ 안전 안내:</strong> ${riskAssessment.message}`;
-                } else if (score >= 5 && score <= 14) {
-                    // 경증 우울군: 불안증상 검사로 진행
+                } else if (score >= 5 && score <= 9) {
+                    // 가벼운 우울군: 불안증상 검사로 진행
                     startBtn.disabled = false;
                     startBtn.style.background = '#27ae60';
                     startBtn.style.cursor = 'pointer';
                     startBtn.textContent = '불안증상 검사 진행';
                     
-                    advice.innerHTML = '<strong>💡 다음 단계:</strong> 해당 점수는 <b>경증 우울 범위(5-14점)</b>에 해당합니다. <br><br><strong>이제 불안증상 검사(GAD-7)를 진행하여 더 정확한 평가를 받을 수 있습니다.</strong><br><br><strong>불안증상 검사는 7개 문항으로 구성되어 있으며, 약 2-3분 정도 소요됩니다.</strong>';
+                    advice.innerHTML = '<strong>💡 다음 단계:</strong> 해당 점수는 <b>가벼운 우울 범위(5-9점)</b>에 해당합니다. <br><br><strong>이제 불안증상 검사(GAD-7)를 진행하여 더 정확한 평가를 받을 수 있습니다.</strong><br><br><strong>불안증상 검사는 7개 문항으로 구성되어 있으며, 약 2-3분 정도 소요됩니다.</strong>';
                     advice.className = 'phq9-note phq9-info';
                     
 
@@ -3326,13 +3338,15 @@ ${basePrompt}`;
                     startBtn.disabled = true;
                     advice.className = 'phq9-note phq9-warn';
                     if(score <= 4) {
-                        advice.innerHTML = '현재 점수는 <b>우울 아님(0–4)</b> 범위입니다. 필요 시 추후 다시 체크하거나, 생활 리듬 관리를 유지해 주세요.';
+                        advice.innerHTML = '현재 점수는 <b>정상(0–4)</b> 범위입니다. 필요 시 추후 다시 체크하거나, 생활 리듬 관리를 유지해 주세요.';
                     } else if(score >= 20) {
-                        advice.innerHTML = '현재 점수는 <b>심한 우울(20–27)</b> 범위일 수 있습니다. 즉시 전문가의 평가와 도움을 권합니다.';
-                    } else { // 15–19
-                        advice.innerHTML = '현재 점수는 <b>중등도(15–19)</b> 범위입니다. 본 체험 프로그램은 제공되지 않습니다. 전문가 상담/치료를 권합니다.';
-                        }
+                        advice.innerHTML = '현재 점수는 <b>심각함(20–27)</b> 범위일 수 있습니다. 즉시 전문가의 평가와 도움을 권합니다.';
+                    } else if(score >= 15 && score <= 19) { // 15–19
+                        advice.innerHTML = '현재 점수는 <b>중함(15–19)</b> 범위입니다. 본 체험 프로그램은 제공되지 않습니다. 전문가 상담/치료를 권합니다.';
+                    } else { // 10-14
+                        advice.innerHTML = '현재 점수는 <b>경함(10–14)</b> 범위입니다. 본 체험 프로그램은 제공되지 않습니다. 전문가 상담/치료를 권합니다.';
                     }
+                }
                 }
 
                 // PHQ-9 9번 질문(자해/자살 생각)에서 1점 이상일 때 위기 상담 연락처 안내는 이미 위에서 표시됨
@@ -3708,18 +3722,35 @@ ${basePrompt}`;
                 totalScore.textContent = phq9Data.score;
                 
                 // 심각도에 따른 조언 복원
-                // 심각도에 따른 조언 복원 (경증 우울군은 불안증상 검사로 진행)
-                if (phq9Data.score >= 5 && phq9Data.score <= 14) {
-                    // 경증 우울군: 불안증상 검사로 진행
+                // 심각도에 따른 조언 복원 (가벼운 우울군은 불안증상 검사로 진행)
+                if (phq9Data.score >= 5 && phq9Data.score <= 9) {
+                    // 가벼운 우울군: 불안증상 검사로 진행
                     startBtn.disabled = false;
                     startBtn.style.background = '#27ae60';
                     startBtn.style.cursor = 'pointer';
                     startBtn.textContent = '불안증상 검사 진행';
                     
-                    advice.innerHTML = '<strong>💡 다음 단계:</strong> 해당 점수는 <b>경증 우울 범위(5-14점)</b>에 해당합니다. <br><br><strong>이제 불안증상 검사(GAD-7)를 진행하여 더 정확한 평가를 받을 수 있습니다.</strong><br><br><strong>불안증상 검사는 7개 문항으로 구성되어 있으며, 약 2-3분 정도 소요됩니다.</strong>';
+                    advice.innerHTML = '<strong>💡 다음 단계:</strong> 해당 점수는 <b>가벼운 우울 범위(5-9점)</b>에 해당합니다. <br><br><strong>이제 불안증상 검사(GAD-7)를 진행하여 더 정확한 평가를 받을 수 있습니다.</strong><br><br><strong>불안증상 검사는 7개 문항으로 구성되어 있으며, 약 2-3분 정도 소요됩니다.</strong>';
                     advice.className = 'phq9-note phq9-info';
                     
                     // 불안증상 검사 진행 버튼만 표시
+                } else {
+                    // 다른 점수 범위는 프로그램 체험 불가
+                    startBtn.disabled = true;
+                    startBtn.style.background = '#bdc3c7';
+                    startBtn.style.cursor = 'not-allowed';
+                    startBtn.textContent = '프로그램 체험 불가';
+                    
+                    if (phq9Data.score <= 4) {
+                        advice.innerHTML = '현재 점수는 <b>정상(0–4)</b> 범위입니다. 필요 시 추후 다시 체크하거나, 생활 리듬 관리를 유지해 주세요.';
+                    } else if (phq9Data.score >= 20) {
+                        advice.innerHTML = '현재 점수는 <b>심각함(20–27)</b> 범위일 수 있습니다. 즉시 전문가의 평가와 도움을 권합니다.';
+                    } else if (phq9Data.score >= 15 && phq9Data.score <= 19) {
+                        advice.innerHTML = '현재 점수는 <b>중함(15–19)</b> 범위입니다. 본 체험 프로그램은 제공되지 않습니다. 전문가 상담/치료를 권합니다.';
+                    } else { // 10-14
+                        advice.innerHTML = '현재 점수는 <b>경함(10–14)</b> 범위입니다. 본 체험 프로그램은 제공되지 않습니다. 전문가 상담/치료를 권합니다.';
+                    }
+                    advice.className = 'phq9-note phq9-warn';
                 }
             }
         }
@@ -4084,7 +4115,7 @@ ${basePrompt}`;
                             <!-- 조언 내용이 여기에 표시됩니다 -->
                         </div>
                         <div class="phq9-btns">
-                            <button id="startBtn" style="background:#3498db;color:white;font-size:1.1em;padding:0.8em 2.5em;border-radius:8px;">불안증상 검사 진행</button>
+                            <button id="startBtn" style="background:#3498db;color:white;font-size:1.1em;padding:0.8em 2.5em;border-radius:8px;">프로그램 체험 시작</button>
                             <button id="backToIntroBtn" style="background:#95a5a6;color:white;font-size:1.1em;padding:0.8em 2.5em;border-radius:8px;margin-left:10px;">처음으로 돌아가기</button>
                         </div>
                     </div>
@@ -4114,37 +4145,43 @@ ${basePrompt}`;
                 const advice = document.getElementById('advice');
                 const startBtn = document.getElementById('startBtn');
                 
-                // 심각도에 따른 조언 복원
-                if (phq9Data.score >= 5 && phq9Data.score <= 14) {
-                    // 경증 우울군: 불안증상 검사로 진행
+                // 심각도에 따른 조언 복원 (가벼운 우울군은 불안증상 검사로 진행)
+                if (phq9Data.score >= 5 && phq9Data.score <= 9) {
+                    // 가벼운 우울군: 불안증상 검사로 진행
                     startBtn.disabled = false;
                     startBtn.style.background = '#27ae60';
                     startBtn.style.cursor = 'pointer';
                     startBtn.textContent = '불안증상 검사 진행';
                     
-                    advice.innerHTML = '<strong>💡 다음 단계:</strong> 해당 점수는 <b>경증 우울 범위(5-14점)</b>에 해당합니다. <br><br><strong>이제 불안증상 검사(GAD-7)를 진행하여 더 정확한 평가를 받을 수 있습니다.</strong><br><br><strong>불안증상 검사는 7개 문항으로 구성되어 있으며, 약 2-3분 정도 소요됩니다.</strong>';
+                    advice.innerHTML = '<strong>💡 다음 단계:</strong> 해당 점수는 <b>가벼운 우울 범위(5-9점)</b>에 해당합니다. <br><br><strong>이제 불안증상 검사(GAD-7)를 진행하여 더 정확한 평가를 받을 수 있습니다.</strong><br><br><strong>불안증상 검사는 7개 문항으로 구성되어 있으며, 약 2-3분 정도 소요됩니다.</strong>';
                     advice.className = 'phq9-note phq9-info';
                 } else if (phq9Data.score <= 4) {
                     startBtn.disabled = true;
                     startBtn.textContent = '프로그램 시작 불가';
-                    advice.innerHTML = '현재 점수는 <b>우울 아님(0–4)</b> 범위입니다. 필요 시 추후 다시 체크하거나, 생활 리듬 관리를 유지해 주세요.';
+                    advice.innerHTML = '현재 점수는 <b>정상(0–4)</b> 범위입니다. 필요 시 추후 다시 체크하거나, 생활 리듬 관리를 유지해 주세요.';
                     advice.className = 'phq9-note phq9-warn';
                 } else if (phq9Data.score >= 20) {
                     startBtn.disabled = true;
                     startBtn.textContent = '프로그램 시작 불가';
-                    advice.innerHTML = '현재 점수는 <b>심한 우울(20–27)</b> 범위일 수 있습니다. 즉시 전문가의 평가와 도움을 권합니다.';
+                    advice.innerHTML = '현재 점수는 <b>심각함(20–27)</b> 범위일 수 있습니다. 즉시 전문가의 평가와 도움을 권합니다.';
                     advice.style.background = '#f8d7da';
                     advice.style.color = '#721c24';
-                } else { // 15–19
+                } else if (phq9Data.score >= 15 && phq9Data.score <= 19) { // 15–19
                     startBtn.disabled = true;
                     startBtn.textContent = '프로그램 시작 불가';
-                    advice.innerHTML = '현재 점수는 <b>중등도(15–19)</b> 범위입니다. 본 체험 프로그램은 제공되지 않습니다. 전문가 상담/치료를 권합니다.';
+                    advice.innerHTML = '현재 점수는 <b>중함(15–19)</b> 범위입니다. 본 체험 프로그램은 제공되지 않습니다. 전문가 상담/치료를 권합니다.';
+                    advice.style.background = '#f8d7da';
+                    advice.style.color = '#721c24';
+                } else { // 10-14
+                    startBtn.disabled = true;
+                    startBtn.textContent = '프로그램 시작 불가';
+                    advice.innerHTML = '현재 점수는 <b>경함(10–14)</b> 범위입니다. 본 체험 프로그램은 제공되지 않습니다. 전문가 상담/치료를 권합니다.';
                     advice.style.background = '#f8d7da';
                     advice.style.color = '#721c24';
                 }
             }
             
-            // 불안증상 검사 진행 버튼 이벤트
+            // 프로그램 체험 시작 버튼 이벤트
             const startBtn = document.getElementById('startBtn');
             if (startBtn && !startBtn.disabled) {
                 startBtn.addEventListener('click', () => {
