@@ -3750,9 +3750,14 @@ ${basePrompt}`;
                 let script = "🎬 시나리오 완성본\n\n";
                 script += `상황: ${scenarioContext}\n\n`;
                 chatHistory.forEach((msg) => {
+                    const raw = String(msg && msg.message ? msg.message : '');
+                    // 화면에서는 표를 보여주되, 완성본에는 표(HTML) 대사를 포함하지 않음
+                    if (raw.toLowerCase().includes('<table')) {
+                        return; // skip HTML table summaries in export
+                    }
                     const speaker = msg.sender === "bot" ? "챗봇" : "나";
                     const parenthetical = msg.sender === "bot" ? "(차분하게)" : "";
-                    const dialogue = `“${msg.message}”`;
+                    const dialogue = `“${raw}”`;
                     script += `${speaker}\n${parenthetical}\n${dialogue}\n`;
                 });
 
