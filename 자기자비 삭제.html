@@ -3404,67 +3404,27 @@ ${basePrompt}`;
             const screeningContainer = document.querySelector('.phq9-screening') || document.querySelector('.gad7-screening');
             if (!screeningContainer) return;
             
-            // 프로그램 시작 화면으로 교체 - 새로운 시나리오 챗봇 로직 적용
+            // 프로그램 시작 화면으로 교체 - 역할극 UI (Gemini 연동 구조) 적용
             screeningContainer.innerHTML = `
-                <div class="program-start" style="max-width: 800px; margin: 0 auto; padding: 20px;">
-                    <h1 style="text-align: center; color: #3f3d56; margin-bottom: 30px;">🎬 시나리오 쓰기 치료 챗봇</h1>
-                    
-                    <div id="chatbox" style="
-                        width: 100%;
-                        background: #fff;
-                        padding: 20px;
-                        border-radius: 12px;
-                        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-                        overflow-y: auto;
-                        height: 420px;
-                        margin-bottom: 15px;
-                        border: 1px solid #e5e7eb;
-                    ">
-                        <div class="bot" style="
-                            color: #3f3d56;
-                            margin: 8px 0;
-                            font-weight: bold;
-                        ">
-                            챗봇: 안녕하세요 🙂 시나리오 쓰기 치료를 시작해볼까요?<br>
-                            먼저 어떤 단계부터 진행할지 선택해 주세요.
-                        </div>
+                <div class="program-start" style="max-width: 920px; margin: 0 auto; padding: 20px;">
+                    <h1 style="text-align: left; color: #3f3d56; margin-bottom: 12px;">긍정 역할극</h1>
+                    <div id="scenarioForm" style="display:block; margin-bottom: 12px;">
+                        <label style="display:none;">상황 묘사</label>
+                        <textarea id="situation" placeholder="" style="display:none; width:100%; height: 80px; padding: 10px; border: 1px solid #ccc; border-radius: 5px; font-size:14px;"></textarea>
+                        <label style="margin-top:8px; display:none;">감정 및 첫 대사</label>
+                        <input id="emotionLine" placeholder='' style="display:none; width:100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; font-size:14px;" />
+                        <button id="startBtn" style="margin-top: 10px;">역할극 시작</button>
                     </div>
 
-                    <div id="input-area" style="
-                        display: flex;
-                        width: 100%;
-                        margin-bottom: 20px;
-                    ">
-                        <input id="user-input" type="text" placeholder="메시지를 입력하세요..." style="
-                            flex: 1;
-                            padding: 10px;
-                            border-radius: 8px;
-                            border: 1px solid #ccc;
-                            font-size: 14px;
-                        " />
-                        <button onclick="sendMessage()" style="
-                            padding: 10px 15px;
-                            margin-left: 10px;
-                            background-color: #3f3d56;
-                            color: white;
-                            border: none;
-                            border-radius: 8px;
-                            cursor: pointer;
-                            font-size: 14px;
-                        ">보내기</button>
+                    <div id="chatbox" style="width: 100%; height: 400px; overflow-y: auto; background: #fff; padding: 12px; border: 1px solid #ccc; border-radius: 10px; margin-bottom: 12px;"></div>
+
+                    <div id="controls" style="display:flex; gap:8px;">
+                        <input id="userInput" placeholder="대사를 입력하세요..." disabled style="flex:1; padding:10px; border:1px solid #ccc; border-radius:5px; font-size:14px;" />
+                        <button id="sendBtn" disabled>전송</button>
+                        <button id="endBtn" disabled>종료</button>
                     </div>
 
-                    <div id="script-output" style="
-                        width: 100%;
-                        background-color: #eef4ff;
-                        padding: 15px;
-                        border-radius: 10px;
-                        border: 1px solid #cfd8dc;
-                        font-size: 14px;
-                    ">
-                        <h3 style="margin-top: 0; color: #2c3e50;">📝 시나리오 요약</h3>
-                        <p id="script-text">아직 작성된 시나리오가 없습니다.</p>
-                    </div>
+                    <div id="scenarioPreview" style="display:none; margin-top: 20px; padding: 12px; background: #f1f1f1; border-radius: 8px; white-space: pre-wrap;"></div>
                 </div>
             `;
             
@@ -3472,139 +3432,97 @@ ${basePrompt}`;
             initScenarioChatbot();
         }
         
-        // 시나리오 챗봇 초기화 및 로직
+        // 시나리오 역할극 초기화 및 로직 (3475 라인부터 적용)
         function initScenarioChatbot() {
             const chatbox = document.getElementById("chatbox");
-            const userInput = document.getElementById("user-input");
-            const scriptText = document.getElementById("script-text");
+            const startBtn = document.getElementById("startBtn");
+            const sendBtn = document.getElementById("sendBtn");
+            const endBtn = document.getElementById("endBtn");
+            const userInput = document.getElementById("userInput");
+            const scenarioPreview = document.getElementById("scenarioPreview");
 
-            // 세 단계 정의
-            const stages = {
-                "1": {
-                    name: "과거 재연극 제작",
-                    desc: "과거의 외상적 사건을 그대로 재연하여 감정을 해소하는 단계예요.",
-                    steps: [
-                        "그때 있었던 갈등 장면을 구체적으로 묘사해 주세요. (언제, 어디서, 누구와, 무슨 일이 있었나요?)",
-                        "그 상황에서 느꼈던 감정은 무엇이었나요?",
-                        "지금 다시 그 장면을 쓰면서 어떤 생각이 드나요?"
-                    ]
-                },
-                "2": {
-                    name: "긍정적 재경험극 제작",
-                    desc: "과거의 사건을 원하는 방향으로 재구성해 새로운 시나리오로 써보는 단계예요.",
-                    steps: [
-                        "과거 사건 중 바꾸고 싶은 장면을 묘사해 주세요.",
-                        "그 장면을 어떻게 다시 쓰고 싶나요? (원하는 대사, 행동 포함)",
-                        "다시 쓴 장면 속에서 느끼는 감정을 표현해 주세요."
-                    ]
-                },
-                "3": {
-                    name: "미래지향적 영화 제작",
-                    desc: "내가 변화되기를 바라는 미래의 모습을 시나리오로 작성하는 단계예요.",
-                    steps: [
-                        "당신이 바라는 이상적인 미래 상황을 묘사해 주세요.",
-                        "그 미래에서 당신이 하고 있는 행동과 대사를 써 주세요.",
-                        "그 미래 장면을 상상할 때 드는 감정을 적어 주세요."
-                    ]
-                }
-            };
-
-            let currentStage = null;
-            let currentStep = -1;
-            let scenario = { "과거 재연극 제작": [], "긍정적 재경험극 제작": [], "미래지향적 영화 제작": [] };
+            let scenarioContext = "";
+            let conversationStep = 0;
+            let chatHistory = [];
+            let awaitingSituation = false;
 
             function addMessage(sender, message) {
-                const messageDiv = document.createElement("div");
-                messageDiv.className = sender;
-                messageDiv.style.cssText = sender === "bot" 
-                    ? "color: #3f3d56; margin: 8px 0; font-weight: bold;" 
-                    : "color: #0077cc; margin: 8px 0; text-align: right;";
-                messageDiv.innerHTML = `${sender === "bot" ? "챗봇" : "사용자"}: ${message}`;
-                chatbox.appendChild(messageDiv);
+                const div = document.createElement("div");
+                div.className = sender;
+                div.innerHTML = `${sender === "bot" ? "챗봇" : "나"}: ${message}`;
+                chatbox.appendChild(div);
                 chatbox.scrollTop = chatbox.scrollHeight;
+                chatHistory.push({ sender, message });
             }
 
-            function sendMessage() {
+            async function callGeminiAPI(userMessage) {
+                // 실제 API 연결 전 더미 응답 (초기 4스텝 가이드 + 이후 순환형 팔로업)
+                const guidedReplies = [
+                    "“네 아이디어가 별로라는 건 아니었어. 오해였다면 미안해.”",
+                    "“그때 어떤 생각이 들었는지 조금 말해줄래?”",
+                    "“다르게 생각해보면 네 아이디어가 꽤 괜찮았을 수도 있어.”",
+                    "“다음 회의에서는 네 의견을 차분히 말하는 걸 연습해볼래?”"
+                ];
+                const fallbackReplies = [
+                    "“말하기 어렵다면 한 단어로만 표현해봐도 좋아.”",
+                    "“지금 느끼는 감정에 이름을 붙여볼까? (화남/서운함/당황 등)”",
+                    "“그때 네가 원했던 건 무엇이었을까?”",
+                    "“다음엔 어떻게 말해보고 싶어?”"
+                ];
+                if (conversationStep < guidedReplies.length) {
+                    return guidedReplies[conversationStep];
+                }
+                const idx = (conversationStep - guidedReplies.length) % fallbackReplies.length;
+                return fallbackReplies[idx];
+            }
+
+            startBtn.addEventListener("click", () => {
+                conversationStep = 0;
+                chatHistory = [];
+                awaitingSituation = true;
+
+                chatbox.innerHTML = "";
+                addMessage("bot", "무슨 일로 오셨어요?");
+
+                userInput.disabled = false;
+                sendBtn.disabled = false;
+                endBtn.disabled = false;
+            });
+
+            sendBtn.addEventListener("click", async () => {
                 const message = userInput.value.trim();
                 if (!message) return;
 
                 addMessage("user", message);
-
-                // 단계 번호(1, 2, 3)가 입력되면 언제든지 해당 단계로 이동
-                if (stages[message]) {
-                    // 기존 단계가 진행 중이었다면 저장
-                    if (currentStage && currentStep >= 0 && currentStep < currentStage.steps.length) {
-                        addMessage("bot", `💾 ${currentStage.name} 단계의 진행 상황이 저장되었습니다.`);
-                    }
-                    
-                    // 새로운 단계 선택
-                    currentStage = stages[message];
-                    currentStep = 0;
-                    addMessage("bot", `선택한 단계: <b>${currentStage.name}</b><br>${currentStage.desc}`);
-                    setTimeout(() => {
-                        addMessage("bot", currentStage.steps[currentStep]);
-                    }, 600);
-                    userInput.value = "";
-                    return;
-                }
-
-                // 현재 단계가 선택되지 않은 경우 → 단계 선택 모드
-                if (!currentStage) {
-                    addMessage("bot", "원하는 단계 번호(1~3) 중 하나를 입력해 주세요.");
-                    userInput.value = "";
-                    return;
-                }
-
-                // 현재 단계의 시나리오 작성
-                scenario[currentStage.name].push(message);
-                currentStep++;
-
-                // 현재 단계에서 남은 질문이 있으면 계속 진행
-                if (currentStep < currentStage.steps.length) {
-                    setTimeout(() => {
-                        addMessage("bot", currentStage.steps[currentStep]);
-                    }, 600);
-                } else {
-                    addMessage("bot", `✔️ ${currentStage.name} 단계가 완료되었습니다.`);
-                    updateScript();
-                    setTimeout(() => {
-                        addMessage("bot", "다음에 진행할 단계를 선택해 주세요 (1: 과거 | 2: 긍정적 재경험 | 3: 미래)");
-                    }, 800);
-                    currentStage = null;
-                    currentStep = -1;
-                }
                 userInput.value = "";
-            }
 
-            function updateScript() {
-                scriptText.innerHTML = `
-                    <b>과거 재연극 제작:</b><br>${scenario["과거 재연극 제작"].map((s, i) => `Step ${i + 1}: ${s}`).join("<br>") || "아직 작성 안 됨"}<br><br>
-                    <b>긍정적 재경험극 제작:</b><br>${scenario["긍정적 재경험극 제작"].map((s, i) => `Step ${i + 1}: ${s}`).join("<br>") || "아직 작성 안 됨"}<br><br>
-                    <b>미래지향적 영화 제작:</b><br>${scenario["미래지향적 영화 제작"].map((s, i) => `Step ${i + 1}: ${s}`).join("<br>") || "아직 작성 안 됨"}
-                `;
-            }
-
-            // 전역 함수로 등록
-            window.sendMessage = sendMessage;
-            
-            // Enter 키로 메시지 전송
-            userInput.addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    sendMessage();
+                if (awaitingSituation) {
+                    // 첫 사용자 입력을 상황으로 저장
+                    scenarioContext = message;
+                    awaitingSituation = false;
+                    conversationStep = 0;
+                } else {
+                    conversationStep++;
                 }
+
+                const reply = await callGeminiAPI(message);
+                addMessage("bot", reply);
             });
 
-            // 초기 단계 안내 메시지 출력
-            setTimeout(() => {
-                addMessage("bot",
-                    "다음 중 하나를 선택해 시작해 주세요:<br><br>" +
-                    "1️⃣ 과거 재연극 제작<br>" +
-                    "2️⃣ 긍정적 재경험극 제작<br>" +
-                    "3️⃣ 미래지향적 영화 제작<br><br>" +
-                    "⚡ <b>각 단계는 자유롭게 오갈 수 있어요!</b><br>" +
-                    "💡 언제든지 1, 2, 3을 입력하면 다른 단계로 이동할 수 있습니다."
-                );
-            }, 1500);
+            endBtn.addEventListener("click", () => {
+                userInput.disabled = true;
+                sendBtn.disabled = true;
+                endBtn.disabled = true;
+
+                let script = "🎬 시나리오 완성본\n\n";
+                script += `상황: ${scenarioContext}\n\n`;
+                chatHistory.forEach((msg) => {
+                    script += `${msg.sender === "bot" ? "챗봇" : "나"}: ${msg.message}\n`;
+                });
+
+                scenarioPreview.style.display = "block";
+                scenarioPreview.textContent = script;
+            });
         }
         
         // GAD-7 불안증상 검사 함수
