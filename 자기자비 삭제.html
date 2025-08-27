@@ -3726,7 +3726,8 @@ ${basePrompt}`;
                         let tableHtml = '<table style="width:100%; border-collapse:collapse; margin:8px 0;">';
                         tableHtml += '<thead><tr><th style="border:1px solid #ddd; padding:6px; text-align:center;">척도</th><th style="border:1px solid #ddd; padding:6px; text-align:center;">문항</th><th style="border:1px solid #ddd; padding:6px; text-align:center;">점수</th></tr></thead><tbody>';
                         rows.forEach(r => {
-                            tableHtml += `<tr><td style=\"border:1px solid #ddd; padding:6px; text-align:center;\">${r.type}</td><td style=\"border:1px solid #ddd; padding:6px;\">${r.text}</td><td style=\"border:1px solid #ddd; padding:6px; text-align:center;\">${r.score}</td></tr>`;
+                            const scaleLabel = r.type === 'PHQ-9' ? '우울' : (r.type === 'GAD-7' ? '불안' : r.type);
+                            tableHtml += `<tr><td style=\"border:1px solid #ddd; padding:6px; text-align:center;\">${scaleLabel}</td><td style=\"border:1px solid #ddd; padding:6px;\">${r.text}</td><td style=\"border:1px solid #ddd; padding:6px; text-align:center;\">${r.score}</td></tr>`;
                         });
                         tableHtml += '</tbody></table>';
                         addMessage('bot', tableHtml);
