@@ -3426,11 +3426,7 @@ ${basePrompt}`;
                         </div>
                     </div>
 
-                    <div id="controls" style="display:flex; gap:8px;">
-                        <input id="userInput" placeholder="대사를 입력하세요..." disabled style="flex:1; padding:10px; border:1px solid #ccc; border-radius:5px; font-size:14px;" />
-                        <button id="sendBtn" disabled>전송</button>
-                        <button id="endBtn" disabled>종료</button>
-                    </div>
+                 
 
                     <div id="scenarioPreview" style="display:none; margin-top: 20px; padding: 12px; background: #f1f1f1; border-radius: 8px; white-space: pre-wrap;"></div>
                 </div>
@@ -3463,6 +3459,26 @@ ${basePrompt}`;
             let futureScenarioText = "";
             let scenarioModeActive = false;
 
+            // 챗봇 컨텍스트 프롬프트 정의 (윤리강령이 1순위로 적용)
+            const contextPrompt = `당신은 "회복의 씨앗"이라는 이름의 상담 챗봇입니다.
+
+당신의 역할:
+- 사용자의 감정과 상황을 공감적으로 이해하고, 소크라테스식 질문을 통해 스스로 답을 찾도록 돕습니다
+- 항상 따뜻하고 격려적인 톤을 유지하며, 사용자의 내면의 힘을 믿고 격려합니다
+
+응답 스타일:
+1. 공감: 사용자의 감정을 먼저 인정하고 공감합니다
+2. 소크라테스 질문: 직접적인 조언 대신 생각해볼 수 있는 질문을 던집니다
+3. 긍정적 연결: 어려운 상황 속에서도 긍정적인 면을 찾아 연결시킵니다
+4. 간결함: 한 번에 한 가지 질문이나 생각을 제시합니다
+
+대화 규칙:
+- 사용자가 '종료'라고 말하면 대화를 요약하고 마무리합니다
+- 항상 윤리적 가이드라인을 우선으로 합니다
+- 위험한 상황이나 자해/자살 언급 시 즉시 전문가 상담을 권장합니다
+
+시작 질문: "지난 2주 간 어떤 일 때문에 위와 같은 점수를 부여하셨나요?"`;
+
             function addMessage(sender, message) {
                 const div = document.createElement("div");
                 div.className = sender;
@@ -3483,8 +3499,118 @@ ${basePrompt}`;
             }
 
             async function callGeminiAPI(userMessage) {
-                // 더미 응답 함수 제거: 실제 API 연동 전에는 응답하지 않음
-                return "";
+                try {
+                    // 윤리적 가이드라인 우선 검증 (1순위)
+                    const ethicalCheck = validatePrivacyAndEthics(userMessage);
+                    if (ethicalCheck.requiresAttention) {
+                        return ethicalCheck.message;
+                    }
+
+                    // 위험도 평가
+                    const riskAssessment = assessRisk(userMessage);
+                    if (riskAssessment.level === 'high') {
+                        return getSafetyMessage(riskAssessment.type);
+                    }
+
+                    // Gemini API 호출
+                    const response = await fetch('/api/gemini', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            message: userMessage,
+                            context: contextPrompt,
+                            chatHistory: chatHistory.slice(-10) // 최근 10개 메시지만 전송
+                        })
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`API 호출 실패: ${response.status}`);
+                    }
+
+                    const data = await response.json();
+                    return data.response || "죄송합니다. 응답을 생성할 수 없습니다.";
+
+                } catch (error) {
+                    console.error('Gemini API 호출 오류:', error);
+                    return "죄송합니다. 일시적인 오류가 발생했습니다. 잠시 후 다시 시도해주세요.";
+                }
+            }
+
+            // 윤리적 가이드라인 검증 함수
+            function validatePrivacyAndEthics(message) {
+                const sensitivePatterns = [
+                    /자해|자살|죽고\s*싶|끝내고\s*싶/gi,
+                    /폭력|살인|범죄/gi,
+                    /개인정보|전화번호|주민번호|주소/gi
+                ];
+
+                for (const pattern of sensitivePatterns) {
+                    if (pattern.test(message)) {
+                        return {
+                            requiresAttention: true,
+                            message: "이런 심각한 내용에 대해서는 전문가와 상담하시는 것이 좋겠습니다. 24시간 상담전화 1393 또는 1588-9191로 연락해주세요."
+                        };
+                    }
+                }
+
+                return { requiresAttention: false };
+            }
+
+            // 위험도 평가 함수
+            function assessRisk(message) {
+                const text = message.toLowerCase();
+                
+                if (/자해|자살|죽고\s*싶|끝내고\s*싶/.test(text)) {
+                    return { level: 'high', type: 'suicide' };
+                }
+                if (/폭력|살인|범죄/.test(text)) {
+                    return { level: 'high', type: 'violence' };
+                }
+                if (/극단적|절망|희망\s*없|답\s*없/.test(text)) {
+                    return { level: 'medium', type: 'despair' };
+                }
+                
+                return { level: 'low', type: 'normal' };
+            }
+
+            // 안전 메시지 생성 함수
+            function getSafetyMessage(type) {
+                const messages = {
+                    suicide: "지금 이 순간이 정말 힘드시겠어요. 하지만 당신의 생명은 소중합니다. 지금 당장 24시간 상담전화 1393 또는 1588-9191로 연락해주세요. 전문가들이 당신을 도와드릴 것입니다.",
+                    violence: "이런 감정을 느끼는 것입니다. 하지만 폭력은 해결책이 아닙니다. 전문가와 상담하여 더 나은 해결책을 찾아보세요.",
+                    despair: "지금은 정말 어려운 시기인 것 같아요. 하지만 이 상황은 영원하지 않습니다. 전문가와 상담하여 도움을 받아보세요."
+                };
+                return messages[type] || "전문가와 상담하시는 것을 권장합니다.";
+            }
+
+            // 대화 요약 생성 함수
+            function generateConversationSummary() {
+                let summary = "🎯 오늘의 대화 요약\n\n";
+                
+                if (scenarioContext) {
+                    summary += `📝 주요 상황: ${scenarioContext}\n\n`;
+                }
+                
+                if (chatHistory.length > 0) {
+                    summary += "💬 대화 내용:\n";
+                    chatHistory.forEach((msg, index) => {
+                        if (msg.sender === 'user') {
+                            summary += `- 나: ${msg.message}\n`;
+                        } else if (msg.sender === 'bot') {
+                            // HTML 태그 제거하고 순수 텍스트만 추출
+                            const cleanMessage = msg.message.replace(/<[^>]*>/g, '').trim();
+                            if (cleanMessage) {
+                                summary += `- 챗봇: ${cleanMessage}\n`;
+                            }
+                        }
+                    });
+                }
+                
+                summary += "\n✨ 오늘도 당신의 회복을 위한 한 걸음을 내딛으셨습니다. 내일도 힘내세요!";
+                
+                return summary;
             }
 
             function analyzeTextSimple(text) {
@@ -3518,6 +3644,8 @@ ${basePrompt}`;
                 displaySymptomItems();
                 // 패널 표시 직후 자동으로 최고점 문항에 대해 질문
                 askHighestSymptomQuestion();
+                // 상황 질문 대기 상태로 설정
+                awaitingSituation = true;
 
                 userInput.disabled = false;
                 sendBtn.disabled = false;
@@ -3532,16 +3660,60 @@ ${basePrompt}`;
                     userInput.value = "";
 
                 if (awaitingSituation) {
-                    // 상황 저장까지만 진행 (역할극 초기 단계로 그침)
-                    scenarioContext = message;
+                    // 유저가 어절(단어) 단위로 응답했는지 확인 후 폼 UI 적용
+                    const tokens = message.split(/\s+/).filter(Boolean);
+                    
+                    // 의미 있는 단어만 필터링 (한국어, 영어, 숫자, 특수문자 조합 제외)
+                    const meaningfulTokens = tokens.filter(token => {
+                        // 2글자 미만은 제외
+                        if (token.length < 2) return false;
+                        
+                        // 한글이나 영어가 포함된 단어만 허용
+                        const hasKorean = /[가-힣]/.test(token);
+                        const hasEnglish = /[a-zA-Z]/.test(token);
+                        const hasNumber = /\d/.test(token);
+                        
+                        // 한글이나 영어가 포함되어야 하며, 숫자만으로는 안됨
+                        return (hasKorean || hasEnglish) && !(hasNumber && !hasKorean && !hasEnglish);
+                    });
+                    
+                    if (meaningfulTokens.length === 0) {
+                        addMessage('bot', '의미 있는 단어를 입력해주세요. 예: "회사에서 상사가 나를 무시했다" (한글, 영어 단어만 인정됩니다)');
+                        return;
+                    }
+
+                    // 의미 있는 토큰만 사용하여 시나리오 컨텍스트 설정
+                    scenarioContext = meaningfulTokens.join(' ');
+
+     
+
+                    // 의미 있는 토큰만 미리보기로 표시하고 바로 챗봇과의 대화 시작
+                    const tokenPreview = `<div style="max-width:800px;margin:8px auto;background:#f8f9fa;padding:12px;border-left:4px solid #28a745;border-radius:6px;">`
+                      + `<div style=\"margin-bottom:8px;\"><strong>입력된 어절:</strong></div>`
+                      + meaningfulTokens.map(t => `<span style=\"display:inline-block;background:#e9ecef;padding:4px 8px;margin:2px;border-radius:4px;\">${t}</span>`).join(' ')
+                      + `</div>`;
+
+                    addMessage('bot', tokenPreview);
+
+                    // 상태 전환하여 contextPrompt 기반 대화 시작
                     awaitingSituation = false;
-                    awaitingAutoThought = false;
-                    awaitingRationalResponse = false;
-                    awaitingFutureScenario = false;
                     scenarioModeActive = true;
-                    const scriptPreview = buildScenarioScript(scenarioContext);
-                    scenarioPreview.style.display = 'block';
-                    scenarioPreview.textContent = scriptPreview;
+                    
+                    // 챗봇이 첫 응답을 생성하도록 API 호출
+                    const firstResponse = await callGeminiAPI(`사용자가 "${scenarioContext}"라는 상황에 대해 이야기하고 있습니다. 이 상황에 대해 공감적이고 소크라틱한 질문으로 대화를 시작해주세요.`);
+                    if (firstResponse) {
+                        addMessage("bot", firstResponse);
+                    }
+                    return;
+                }
+
+                // '종료' 명령 처리
+                if (message === '종료') {
+                    const summary = generateConversationSummary();
+                    addMessage("bot", summary);
+                    userInput.disabled = true;
+                    sendBtn.disabled = true;
+                    endBtn.disabled = true;
                     return;
                 }
 
@@ -3706,22 +3878,9 @@ ${basePrompt}`;
                         }
                     }
 
-                    const any = (phqTop.length + gadTop.length) > 0;
-                    if (any) {
-                        // 질문 문구 구성 (각각 최고점 사용)
-                        const phqText = phqTop.length ? phqTop.map(i => i.text).join(', ') : null;
-                        const gadText = gadTop.length ? gadTop.map(i => i.text).join(', ') : null;
-
-                        let question = '';
-                        if (phqText && gadText) {
-                            question = `지난 2주 간 어떤 일 때문에 PHQ-9: ${phqText}, GAD-7: ${gadText}에 각각 ${phqMax}점/${gadMax}점을 부여하셨나요?`;
-                        } else if (phqText) {
-                            question = `지난 2주 간 어떤 일 때문에 PHQ-9: ${phqText}에 ${phqMax}점을 부여하셨나요?`;
-                        } else {
-                            question = `지난 2주 간 어떤 일 때문에 GAD-7: ${gadText}에 ${gadMax}점을 부여하셨나요?`;
-                        }
-
-                        // 표로 요약 제공 (항상 표부터 출력)
+                    // 최고점이 있는 경우와 없는 경우 모두 처리
+                    if (phqTop.length > 0 || gadTop.length > 0) {
+                        // 최고점이 있는 경우: 표와 함께 질문
                         const rows = [...phqTop, ...gadTop];
                         let tableHtml = '<table style="width:100%; border-collapse:collapse; margin:8px 0;">';
                         tableHtml += '<thead><tr><th style="border:1px solid #ddd; padding:6px; text-align:center;">척도</th><th style="border:1px solid #ddd; padding:6px; text-align:center;">문항</th><th style="border:1px solid #ddd; padding:6px; text-align:center;">점수</th></tr></thead><tbody>';
@@ -3734,10 +3893,13 @@ ${basePrompt}`;
 
                         // 간결한 질문
                         addMessage('bot', '지난 2주 간 어떤 일 때문에 위와 같은 점수를 부여하셨나요?');
-                        awaitingSituation = true;
-                        const panel = document.getElementById('emotionPanel');
-                        if (panel) panel.style.display = 'none';
+                    } else {
+                        // 최고점이 없는 경우 (모두 0점): PHQ-9만 해당 포맷으로 질문
+                        addMessage('bot', '지난 2주 간 어떤 일 때문에 PHQ-9: 기분이 가라앉거나, 우울하거나, 희망이 없다고 느끼신 적이 있나요?');
                     }
+                    
+                    const panel = document.getElementById('emotionPanel');
+                    if (panel) panel.style.display = 'none';
                 }
 
             // 감정 버튼 로직 제거 (PHQ-9/GAD-7 기반으로 대체)
@@ -3761,8 +3923,9 @@ ${basePrompt}`;
                     script += `${speaker}\n${parenthetical}\n${dialogue}\n`;
                 });
 
-                scenarioPreview.style.display = "block";
-                scenarioPreview.textContent = script;
+                // generateConversationSummary 함수를 사용하여 대화 요약 생성
+                const summary = generateConversationSummary();
+                addMessage("bot", summary);
             });
 
             function buildScenarioScript(contextText) {
