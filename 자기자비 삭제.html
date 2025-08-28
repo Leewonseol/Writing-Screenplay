@@ -133,25 +133,7 @@
             margin: 0;
         }
 
-        .mindmap-block {
-            background: #eef;
-            border: 1px dashed #66a;
-            padding: 1em;
-            margin-top: 1em;
-            border-radius: 5px;
-        }
-
-        .mindmap-block strong {
-            color: #2c3e50;
-            display: block;
-            margin-bottom: 0.5em;
-        }
-
-        .mindmap-block pre {
-            white-space: pre-wrap;
-            margin: 0;
-            font-family: inherit;
-        }
+        
 
         .loading {
             opacity: 0.7;
@@ -679,7 +661,7 @@
         <textarea id="responseTextarea" placeholder="여기에 내용을 작성하세요..."></textarea>
         
         <div class="api-section">
-            <button id="stageMapBtn">단계 요약 마인드맵</button>
+            
             <button id="suggestBtn" style="margin-left: 1em;">AI 제안/질문</button>
     
         </div>
@@ -1326,12 +1308,12 @@ ${basePrompt}`;
             } else {
                 nextBtn.textContent = '완료';
             }
-            // aiResults 내용은 마인드맵을 위해 유지 (단계 변경 시에도 삭제하지 않음)
+            
             // 1, 2, 3, 4단계에서는 AI 제안/질문 접기 버튼 숨기기
             if (currentIndex === 0 || currentIndex === 1 || currentIndex === 2 || currentIndex === 3) {
                 const suggestBtn = document.getElementById('suggestBtn');
                 if (suggestBtn) suggestBtn.style.display = 'none';
-                // aiResults는 마인드맵을 위해 숨기지 않음
+                
             } else {
                 const suggestBtn = document.getElementById('suggestBtn');
                 if (suggestBtn) suggestBtn.style.display = '';
@@ -1339,21 +1321,7 @@ ${basePrompt}`;
                 if (aiResults) aiResults.style.display = '';
             }
             
-            // 마인드맵 버튼 표시/숨김 제어
-            const stageMapBtn = document.getElementById('stageMapBtn');
-            if (stageMapBtn) {
-                if (currentIndex === 0) {
-                    // 1단계: 요약할 게 없으므로 숨김
-                    stageMapBtn.style.display = 'none';
-                    console.log('마인드맵 버튼 숨김 (1단계)');
-                } else {
-                    // 2단계 이상: 이전 단계들을 요약하므로 표시
-                    stageMapBtn.style.display = '';
-                    console.log('마인드맵 버튼 표시 (단계:', currentIndex + 1, ')');
-                }
-            } else {
-                console.log('마인드맵 버튼을 찾을 수 없음');
-            }
+            
         }
 
         // 진행 상태 표시 업데이트
@@ -1376,213 +1344,7 @@ ${basePrompt}`;
             }
         }
 
-        // 단계 요약 마인드맵 처리 (요약+마인드맵 통합)
-        async function handleAIMindmap() {
-            // API 키 없으면 동작 금지
-            // const apiKeyStatus = document.getElementById('apiKeyStatus').textContent; // 제거됨
-            // if (apiKeyStatus !== '저장됨') {
-            //     alert('먼저 Gemini API 키를 입력/저장해야 AI 기능을 사용할 수 있습니다.');
-            //     return;
-            // }
-
-            // 현재 단계까지의 입력 내용 체크
-            const hasContent = responses.slice(0, currentIndex + 1).some(r => {
-                if (Array.isArray(r)) {
-                    return r.some(item => {
-                        if (typeof item === 'string') {
-                            return item.trim();
-                        } else if (Array.isArray(item)) {
-                            return item.length > 0;
-                        }
-                        return false;
-                    });
-                }
-                return false;
-            });
-            
-            if (!hasContent) {
-                // 내용이 없을 때 기본 마인드맵 템플릿 제공
-                const defaultMindmap = `🗺️ 기본 마인드맵 템플릿
-
-📝 1단계: 기본 정보
-   • 주인공의 이름과 기본 배경
-   • 이야기가 일어나는 시간과 장소
-   • 주요 인물들의 관계
-
-💭 2단계: 상황 탐색 (1단계 정보 포함)
-   • 1단계의 기본 정보를 바탕으로 한 상황 탐색
-
-🎬 3단계: 스토리 구성 (1단계와 2단계 정보 모두 포함)
-   • 주제와 스토리보드
-   • 주요 장면들의 흐름
-   • 이야기의 시작, 전개, 위기, 해결
-
-🎭 4단계: 영화 제목
-   • 이 모든 여정을 영화나 드라마 제목으로 나타내기`;
-                
-                // 기본 마인드맵 블록 생성
-                const mindmapBlock = document.createElement('div');
-                mindmapBlock.className = 'mindmap-block';
-                mindmapBlock.innerHTML = `
-                    <div style='background:#f8f9fa;padding:1em;border-radius:8px;border:1px solid #d0d7de;margin:1em 0;'>
-                        <strong>🗺️ 기본 마인드맵 템플릿</strong>
-                        <div style='margin-top:0.5em;white-space:pre-line;font-size:0.95em;line-height:1.5;'>${defaultMindmap}</div>
-                        <div style='margin-top:1em;color:#666;font-size:0.9em;'>💡 내용을 입력한 후 다시 시도하면 AI가 맞춤형 마인드맵을 생성해드립니다.</div>
-                    </div>
-                `;
-                
-                aiResults.appendChild(mindmapBlock);
-                stageMapBtn.textContent = '단계 요약 마인드맵';
-                stageMapBtn.disabled = false;
-                loadingMindmap = false;
-                return;
-            }
-
-            loadingMindmap = true;
-            const stageMapBtn = document.getElementById('stageMapBtn');
-            stageMapBtn.textContent = '생성 중...';
-            stageMapBtn.disabled = true;
-
-            // 기존 mindmap-block 모두 삭제 (중복 방지)
-            document.querySelectorAll('.mindmap-block').forEach(e => e.remove());
-
-            // aiResults 요소가 보이도록 설정
-            const aiResults = document.getElementById('aiResults');
-            if (aiResults) {
-                aiResults.style.display = 'block';
-            }
-
-            // 각 단계 요약 통합 (현재 단계까지만)
-            const cumulative = responses
-                .slice(0, currentIndex + 1)
-                .map((r, i) => {
-                    let stageContent = '';
-                    if (Array.isArray(r)) {
-                        // 각 단계별로 다른 처리
-                        if (i === 0) {
-                            // 1단계: 기본 정보
-                            stageContent = r.filter(item => typeof item === 'string' && item.trim()).join('\n\n');
-                        } else if (i === 1) {
-                            // 2단계: 질문과 답변 (1단계 정보만 포함)
-                            const stage1Content = responses[0].filter(item => typeof item === 'string' && item.trim()).join('\n\n');
-                            const stage2Content = r.filter(item => typeof item === 'string' && item.trim()).join('\n\n');
-                            stageContent = `1단계 정보:\n${stage1Content}\n\n2단계 답변:\n${stage2Content}`;
-                        } else if (i === 2) {
-                            // 3단계: 주제, 스토리보드 (1단계와 2단계 정보 모두 포함)
-                            const stage1Content = responses[0].filter(item => typeof item === 'string' && item.trim()).join('\n\n');
-                            const stage2Content = responses[1].filter(item => typeof item === 'string' && item.trim()).join('\n\n');
-                            const subject = r[0]?.trim() || '';
-                            const storyboard = r[2] || [];
-                            
-                            let storyboardContent = '';
-                            if (Array.isArray(storyboard) && storyboard.length > 0) {
-                                storyboardContent = storyboard.map((scene, idx) => {
-                                    if (scene && typeof scene === 'object') {
-                                        return `장면 ${idx + 1}: ${scene.title || ''}\n설명: ${scene.desc || ''}\n대사/행동: ${scene.lines || ''}`;
-                                    }
-                                    return '';
-                                }).filter(content => content.trim()).join('\n\n');
-                            }
-                            
-                            stageContent = `1단계 정보:\n${stage1Content}\n\n2단계 답변:\n${stage2Content}\n\n3단계 내용:\n주제: ${subject}\n\n스토리보드:\n${storyboardContent}`;
-                        } else if (i === 3) {
-                            // 4단계: 영화 제목
-                            stageContent = r.filter(item => typeof item === 'string' && item.trim()).join('\n\n');
-                        }
-                    }
-                    return `## ${i+1}단계: ${STAGES[i].title}\n${stageContent}\n\n`;
-                })
-                .join("\n\n");
-
-            const messages = [
-                { role: "system", content: "단계별 계층적 마인드맵을 생성하는 AI입니다. 각 단계의 내용을 독립적으로 처리하고, 서로 다른 단계의 내용을 임의로 연결하거나 결합하지 마세요. 각 단계의 핵심 내용만 마인드맵 형태로 정리해주세요. '세부 가지'나 '참고' 섹션은 포함하지 마세요." },
-                { role: "user", content: `다음 내용을 마인드맵 형식으로 정리해주세요. 각 단계의 내용을 독립적으로 처리하고, 서로 다른 단계의 내용을 임의로 연결하거나 결합하지 마세요. '세부 가지'나 '참고' 섹션은 포함하지 말고 핵심 내용만 정리해주세요:\n\n${cumulative}` }
-            ];
-
-            console.log('마인드맵 생성용 내용:', cumulative);
-            console.log('현재 responses:', responses);
-            console.log('현재 currentIndex:', currentIndex);
-            let map;
-            try {
-                map = await callAICompletion(null, messages, 'gemini'); // API Key 파라미터 제거
-                console.log('AI 응답 받음:', map);
-                
-                // "세부 가지"와 "참고" 섹션 제거
-                if (map.includes('**세부 가지**') || map.includes('**참고:**')) {
-                    // 세부 가지 섹션 제거
-                    map = map.replace(/\*\*세부 가지\*\*[\s\S]*?(?=\*\*참고:\*\*|\*\*[^*]|$)/g, '');
-                    // 참고 섹션 제거
-                    map = map.replace(/\*\*참고:\*\*[\s\S]*$/g, '');
-                    // 빈 줄 정리
-                    map = map.replace(/\n\s*\n\s*\n/g, '\n\n').trim();
-                }
-                
-                // 잘못된 연결 수정 (예: 신지한(전 여친) → 신지한, 전 여친으로 분리)
-                map = map.replace(/([가-힣]+)\(([^)]+)\)/g, '$1\n$2');
-                // 추가적인 잘못된 연결 패턴 수정
-                map = map.replace(/([가-힣]+)\s*\+\s*([가-힣]+)/g, '$1\n$2');
-                map = map.replace(/([가-힣]+)\s*&\s*([가-힣]+)/g, '$1\n$2');
-            } catch (error) {
-                console.error('마인드맵 생성 오류:', error);
-                map = '마인드맵 생성 중 오류가 발생했습니다.';
-            }
-            
-            // 토글 가능한 마인드맵 블록 생성
-            const mindmapBlock = document.createElement('div');
-            mindmapBlock.className = 'mindmap-block';
-            mindmapBlock.style.position = 'relative';
-            mindmapBlock.style.marginTop = '1em';
-            mindmapBlock.style.padding = '1em';
-            mindmapBlock.style.border = '2px solid #3498db';
-            mindmapBlock.style.borderRadius = '8px';
-            mindmapBlock.style.backgroundColor = '#f8f9fa';
-
-            // 토글 버튼 생성
-            const toggleBtn = document.createElement('button');
-            toggleBtn.textContent = '마인드맵 펼치기';
-            toggleBtn.style.marginBottom = '1em';
-            toggleBtn.style.display = 'block';
-            toggleBtn.style.background = '#3498db';
-            toggleBtn.style.color = 'white';
-            toggleBtn.style.border = 'none';
-            toggleBtn.style.borderRadius = '4px';
-            toggleBtn.style.padding = '0.5em 1em';
-            toggleBtn.style.cursor = 'pointer';
-
-            // 마인드맵 내용 div
-            const mindmapContent = document.createElement('div');
-            mindmapContent.style.display = 'none';
-            mindmapContent.innerHTML = `
-                <strong>🗺️ 단계 요약 마인드맵 결과</strong>
-                <pre>${map}</pre>
-            `;
-
-            toggleBtn.addEventListener('click', function() {
-                if (mindmapContent.style.display === 'none') {
-                    mindmapContent.style.display = 'block';
-                    toggleBtn.textContent = '마인드맵 접기';
-                } else {
-                    mindmapContent.style.display = 'none';
-                    toggleBtn.textContent = '마인드맵 펼치기';
-                }
-            });
-
-            mindmapBlock.appendChild(toggleBtn);
-            mindmapBlock.appendChild(mindmapContent);
-            aiResults.appendChild(mindmapBlock);
-
-            // 성공 메시지 표시
-            const successMsg = document.createElement('div');
-            successMsg.style.color = '#27ae60';
-            successMsg.style.fontWeight = 'bold';
-            successMsg.style.marginTop = '0.5em';
-            successMsg.textContent = '✅ 마인드맵이 성공적으로 생성되었습니다!';
-            mindmapBlock.appendChild(successMsg);
-
-            loadingMindmap = false;
-            stageMapBtn.textContent = '단계 요약 마인드맵';
-            stageMapBtn.disabled = false;
-        }
+        
 
         // AI 제안/질문 처리 (프롬프트 보강)
         async function handleAISuggestion() {
@@ -2318,13 +2080,7 @@ ${basePrompt}`;
             }
         });
 
-        // 단계 요약 마인드맵 버튼 동작
-        document.getElementById('stageMapBtn').addEventListener('click', function() {
-            console.log('마인드맵 버튼 클릭됨');
-            console.log('현재 currentIndex:', currentIndex);
-            console.log('현재 responses:', responses);
-            handleAIMindmap();
-        });
+        
 
         // 입력값 전체 삭제 버튼 동작
         document.getElementById('clearAllBtn').addEventListener('click', () => {
