@@ -3417,6 +3417,11 @@ ${basePrompt}`;
                     </div>
 
                     <div id="chatbox" style="width: 100%; height: 400px; overflow-y: auto; background: #fff; padding: 12px; border: 1px solid #ccc; border-radius: 10px; margin-bottom: 12px;"></div>
+                    <div id="chatControls" style="display:flex; gap:8px; align-items:center; margin-bottom:12px;">
+                        <input id="userInput" type="text" placeholder="여기에 대사를 입력하세요..." style="flex:1; padding:10px; border:1px solid #ccc; border-radius:8px; font-size:14px;" disabled />
+                        <button id="sendBtn" style="padding:10px 16px; border-radius:8px; background:#3498db; color:#fff; border:none;" disabled>전송</button>
+                        <button id="endBtn" style="padding:10px 16px; border-radius:8px; background:#e74c3c; color:#fff; border:none;" disabled>종료</button>
+                    </div>
 
                     <div id="emotionPanel" style="display:none; margin-bottom: 12px;">
                         <div style="background:#f8f9fa; padding:15px; border-radius:8px; border:1px solid #dee2e6;">
@@ -3460,24 +3465,30 @@ ${basePrompt}`;
             let scenarioModeActive = false;
 
             // 챗봇 컨텍스트 프롬프트 정의 (윤리강령이 1순위로 적용)
-            const contextPrompt = `당신은 "회복의 씨앗"이라는 이름의 상담 챗봇입니다.
+            const contextPrompt = `
+너는 심리상담 보조 챗봇 "회복의 씨앗"이야.
+사용자가 "검은 파도" 역할로 부정적인 생각을 말하면,
+너는 "회복의 씨앗"으로서 반드시 소크라테스식 질문을 활용해 응답해야 해.
 
-당신의 역할:
-- 사용자의 감정과 상황을 공감적으로 이해하고, 소크라테스식 질문을 통해 스스로 답을 찾도록 돕습니다
-- 항상 따뜻하고 격려적인 톤을 유지하며, 사용자의 내면의 힘을 믿고 격려합니다
-
-응답 스타일:
-1. 공감: 사용자의 감정을 먼저 인정하고 공감합니다
-2. 소크라테스 질문: 직접적인 조언 대신 생각해볼 수 있는 질문을 던집니다
-3. 긍정적 연결: 어려운 상황 속에서도 긍정적인 면을 찾아 연결시킵니다
-4. 간결함: 한 번에 한 가지 질문이나 생각을 제시합니다
+소크라테스식 질문이란:
+- "그렇게 믿게 된 구체적인 이유가 있나요?"
+- "그게 항상 사실인가요, 아니면 이번만 그런가요?"
+- "비슷한 상황에서 다른 결과가 나온 적은 없었나요?"
+- "만약 친구가 같은 말을 했다면 뭐라고 조언해주고 싶나요?"
+처럼, 사용자가 스스로 자신의 생각의 근거를 검토하도록 유도하는 질문 방식이야.
 
 대화 규칙:
-- 사용자가 '종료'라고 말하면 대화를 요약하고 마무리합니다
-- 항상 윤리적 가이드라인을 우선으로 합니다
-- 위험한 상황이나 자해/자살 언급 시 즉시 전문가 상담을 권장합니다
-
-시작 질문: "지난 2주 간 어떤 일 때문에 위와 같은 점수를 부여하셨나요?"`;
+1. 먼저 사용자의 감정을 공감해줘.
+2. 이어서 반드시 위와 같은 **소크라테스식 질문 패턴 중 하나**를 적용해.
+3. 가능하다면 사용자가 말한 긍정적인 면이나 깨달음을 연결해 맞춤 피드백을 해줘.
+4. 답변은 1~3문장 이내로 간결하게.
+5. PHQ-9(우울)과 GAD-7(불안) 각 설문에서 "최고점"에 해당하는 문항만 표로 요약해 보여줘.
+   표 열 구성: "척도", "문항", "점수". 각 척도에서 최고점 문항만 포함해.
+   표가 생성된 뒤 챗봇은 다음 질문을 이어서 해:
+   "표의 점수는 사용자님께서 매기신 우울 척도와 불안 척도의 최고점에 해당하는 문항이에요. 지난 2주간 어떤 일 때문에 위와 같은 점수를 부여하셨나요?"
+6. 사용자가 '종료'를 선택하면, 지금까지 오간 대화를 "대화 스크립트" 형태로 정리해줘.
+   이때 **아무것도 추가하지 말고 오로지 오간 대화만** 있어야 해.
+`;
 
             function addMessage(sender, message) {
                 const div = document.createElement("div");
@@ -3687,14 +3698,6 @@ ${basePrompt}`;
 
      
 
-                    // 의미 있는 토큰만 미리보기로 표시하고 바로 챗봇과의 대화 시작
-                    const tokenPreview = `<div style="max-width:800px;margin:8px auto;background:#f8f9fa;padding:12px;border-left:4px solid #28a745;border-radius:6px;">`
-                      + `<div style=\"margin-bottom:8px;\"><strong>입력된 어절:</strong></div>`
-                      + meaningfulTokens.map(t => `<span style=\"display:inline-block;background:#e9ecef;padding:4px 8px;margin:2px;border-radius:4px;\">${t}</span>`).join(' ')
-                      + `</div>`;
-
-                    addMessage('bot', tokenPreview);
-
                     // 상태 전환하여 contextPrompt 기반 대화 시작
                     awaitingSituation = false;
                     scenarioModeActive = true;
@@ -3857,31 +3860,33 @@ ${basePrompt}`;
                             } catch (_) {}
                         }
                         const norm = normalizeItems(sourceItems, 9);
-                        const entries = Object.entries(norm).filter(([_, s]) => Number(s) > 0);
+                        const entries = Object.entries(norm)
+                            .filter(([_, s]) => Number(s) > 0);
                         if (entries.length > 0) {
-                            phqMax = Math.max(...entries.map(([_, s]) => Number(s)));
-                            phqTop = entries.filter(([_, s]) => Number(s) === phqMax)
+                            const maxScore = Math.max(...entries.map(([_, s]) => Number(s)));
+                            phqTop = entries
+                                .filter(([_, s]) => Number(s) === maxScore)
                                 .map(([n, s]) => ({ type: 'PHQ-9', itemNum: n, score: Number(s), text: getPhq9ItemText(n) }));
                         }
                     }
 
                     // GAD-7 최고점 문항 추출
-                    let gadMax = null;
                     let gadTop = [];
                     if (gad7Data.items) {
                         const norm = normalizeItems(gad7Data.items, 7);
-                        const entries = Object.entries(norm).filter(([_, s]) => Number(s) > 0);
+                        const entries = Object.entries(norm)
+                            .filter(([_, s]) => Number(s) > 0);
                         if (entries.length > 0) {
-                            gadMax = Math.max(...entries.map(([_, s]) => Number(s)));
-                            gadTop = entries.filter(([_, s]) => Number(s) === gadMax)
+                            const maxScore = Math.max(...entries.map(([_, s]) => Number(s)));
+                            gadTop = entries
+                                .filter(([_, s]) => Number(s) === maxScore)
                                 .map(([n, s]) => ({ type: 'GAD-7', itemNum: n, score: Number(s), text: getGad7ItemText(n) }));
                         }
                     }
 
-                    // 최고점이 있는 경우와 없는 경우 모두 처리
-                    if (phqTop.length > 0 || gadTop.length > 0) {
-                        // 최고점이 있는 경우: 표와 함께 질문
-                        const rows = [...phqTop, ...gadTop];
+                    // 표 생성: 각 척도에서 최고점 문항만 포함
+                    const rows = [...phqTop, ...gadTop];
+                    if (rows.length > 0) {
                         let tableHtml = '<table style="width:100%; border-collapse:collapse; margin:8px 0;">';
                         tableHtml += '<thead><tr><th style="border:1px solid #ddd; padding:6px; text-align:center;">척도</th><th style="border:1px solid #ddd; padding:6px; text-align:center;">문항</th><th style="border:1px solid #ddd; padding:6px; text-align:center;">점수</th></tr></thead><tbody>';
                         rows.forEach(r => {
@@ -3890,13 +3895,9 @@ ${basePrompt}`;
                         });
                         tableHtml += '</tbody></table>';
                         addMessage('bot', tableHtml);
-
-                        // 간결한 질문
-                        addMessage('bot', '지난 2주 간 어떤 일 때문에 위와 같은 점수를 부여하셨나요?');
-                    } else {
-                        // 최고점이 없는 경우 (모두 0점): PHQ-9만 해당 포맷으로 질문
-                        addMessage('bot', '지난 2주 간 어떤 일 때문에 PHQ-9: 기분이 가라앉거나, 우울하거나, 희망이 없다고 느끼신 적이 있나요?');
                     }
+                    // 고정 질문 (지시문 업데이트)
+                    addMessage('bot', '표의 점수는 사용자님께서 매기신 우울 척도와 불안 척도의 최고점에 해당하는 문항이에요. 지난 2주간 어떤 일 때문에 위와 같은 점수를 부여하셨나요?');
                     
                     const panel = document.getElementById('emotionPanel');
                     if (panel) panel.style.display = 'none';
