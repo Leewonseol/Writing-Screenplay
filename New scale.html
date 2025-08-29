@@ -2735,13 +2735,7 @@ ${basePrompt}`;
                         
                         <h1 class="phq9-title">우울증 건강설문‑9 (PHQ‑9) — 한국판</h1>
                         <div class="phq9-sub">
-                            지난 <b>2주</b> 동안 다음과 같은 문제들로 <b>얼마나 자주</b> 곤란을 겪었는지 선택하세요. (0=없음, 1=2–6일, 2=7–12일, 3=거의 매일)<br>
-                            <small style="margin-top: 8px; display: block; color: #6b7280; font-size: 12px;">
-                                📋 <a href="https://www.ncmh.go.kr/ncmh/board/boardView.do?no=8834&fno=106&bn=newsView&menu_cd=04_02_02_04&bno=&pageIndex=1&search_item=&search_content=#" target="_blank" style="color: #2563eb; text-decoration: none; font-weight: 500;">
-                                    PHQ-9 한국판 표준지침 (국립정신건강센터)
-                                </a> ↗
-                            </small>
-
+                            지난 <b>2주</b> 동안 다음과 같은 문제들로 <b>얼마나 자주</b> 곤란을 겪었는지 선택하세요. (0=없음, 1=2–6일, 2=7–12일, 3=거의 매일)
                         </div>
                         
                         <div class="phq9-grid" id="phq9Grid"></div>
@@ -2753,6 +2747,13 @@ ${basePrompt}`;
                         <div class="phq9-result" id="phq9Result" style="display: none;">
                             <div class="phq9-score">총점: <span id="phq9Total">0</span> / 27 <span id="phq9SevTag" class="phq9-sev none">정상 (0–4)</span></div>
                             <div id="phq9Advice" class="phq9-note" style="margin-top:8px"></div>
+                            <div style="margin: 16px 0; padding: 12px; background: #f8f9fa; border-radius: 8px; border-left: 4px solid #2563eb;">
+                                <small style="color: #6b7280; font-size: 12px;">
+                                    📋 <a href="https://www.ncmh.go.kr/ncmh/board/boardView.do?no=8834&fno=106&bn=newsView&menu_cd=04_02_02_04&bno=&pageIndex=1&search_item=&search_content=#" target="_blank" style="color: #2563eb; text-decoration: none; font-weight: 500;">
+                                        PHQ-9 한국판 표준지침 (국립정신건강센터)
+                                    </a> ↗
+                                </small>
+                            </div>
                             <div class="phq9-btns">
                                 <button id="phq9StartBtn" class="phq9-btn phq9-primary" disabled>프로그램 체험 시작</button>
                                 <button id="phq9BackBtn" class="phq9-btn phq9-ghost">뒤로 가기</button>
@@ -3988,12 +3989,7 @@ ${basePrompt}`;
                     <div class="gad7-card">
                         <h1 class="gad7-title">2단계: 불안증상 검사 (GAD-7)</h1>
                         <div class="gad7-sub">
-                            지난 2주일 동안 당신은 다음의 문제들로 인해서 얼마나 자주 방해를 받았습니까?<br>
-                            <small style="margin-top: 8px; display: block; color: #6b7280; font-size: 12px;">
-                                📋 <a href="https://nct.go.kr/distMental/rating/rating02_3.do" target="_blank" style="color: #2563eb; text-decoration: none; font-weight: 500;">
-                                    GAD-7 한국판 표준지침 (국립정신건강센터-국가트라우마센터)
-                                </a> ↗
-                            </small>
+                            지난 2주일 동안 당신은 다음의 문제들로 인해서 얼마나 자주 방해를 받았습니까?
                         </div>
                         
                         <div class="phq9-grid" id="gad7Grid"></div>
@@ -4001,6 +3997,7 @@ ${basePrompt}`;
                         <div class="phq9-result" id="gad7Result" style="display: none;">
                             <div class="phq9-score">총점: <span id="gad7Total">0</span> / 21 <span id="gad7SevTag" class="phq9-sev none">불안 아님 (0–4)</span></div>
                             <div id="gad7Advice" class="phq9-note" style="margin-top:8px"></div>
+
                             <div class="phq9-btns">
                                 <button id="gad7StartBtn" class="phq9-btn phq9-primary">프로그램 시작하기</button>
                                 <button id="gad7BackBtn" class="phq9-btn phq9-ghost">PHQ-9 결과로 돌아가기</button>
@@ -4603,12 +4600,7 @@ ${basePrompt}`;
                     <div class="gad7-card">
                         <h1 class="gad7-title">2단계: 불안증상 검사 (GAD-7)</h1>
                         <div class="gad7-sub">
-                            지난 2주일 동안 당신은 다음의 문제들로 인해서 얼마나 자주 방해를 받았습니까?<br>
-                            <small style="margin-top: 8px; display: block; color: #6b7280; font-size: 12px;">
-                                📋 <a href="https://nct.go.kr/distMental/rating/rating02_3.do" target="_blank" style="color: #2563eb; text-decoration: none; font-weight: 500;">
-                                    GAD-7 한국판 표준지침 (국립정신건강센터-국가트라우마센터)
-                                </a> ↗
-                            </small>
+                            지난 <b>2주</b> 동안 당신은 다음의 문제들로 인해서 <b>얼마나 자주</b> 방해를 받았습니까?
                         </div>
                         
                         <div class="gad7-grid" id="gad7Grid"></div>
@@ -4838,6 +4830,20 @@ ${basePrompt}`;
                 }
                 
                 advice.style.display = 'block';
+
+                // GAD-7 한국판 표준지침 링크 추가 (검사 완료 후에만 표시)
+                const guidelineDiv = document.createElement('div');
+                guidelineDiv.style.cssText = 'margin: 16px 0; padding: 12px; background: #f8f9fa; border-radius: 8px; border-left: 4px solid #dc3545;';
+                guidelineDiv.innerHTML = `
+                    <small style="color: #6b7280; font-size: 12px;">
+                        📋 <a href="https://nct.go.kr/distMental/rating/rating02_3.do" target="_blank" style="color: #2563eb; text-decoration: none; font-weight: 500;">
+                            GAD-7 한국판 표준지침 (국립정신건강센터-국가트라우마센터)
+                        </a> ↗
+                    </small>
+                `;
+                
+                // advice 요소 다음에 가이드라인 링크 추가
+                advice.parentNode.insertBefore(guidelineDiv, advice.nextSibling);
 
                 // 결과 화면으로 전환
                 progressDiv.style.display = 'none';
