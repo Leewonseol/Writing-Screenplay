@@ -13,9 +13,16 @@ CORS(app)
 
 # Gemini API 설정
 GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY')
+print(f"🔑 로드된 API 키: {GOOGLE_API_KEY[:10]}..." if GOOGLE_API_KEY else "❌ API 키 없음")
 if GOOGLE_API_KEY:
     genai.configure(api_key=GOOGLE_API_KEY)
-    model = genai.GenerativeModel('gemini-pro')
+    # 최신 지원 모델 사용 및 폴백 구성
+    try:
+        model = genai.GenerativeModel('gemini-1.5-pro')
+        # 더 일찍 오류 노출을 위해 no-op 호출 대신 모델 객체만 준비
+    except Exception:
+        # 구버전/권한 문제 시 경량 모델로 폴백
+        model = genai.GenerativeModel('gemini-1.5-flash')
     print("✅ Gemini API가 설정되었습니다.")
 else:
     print("⚠️  경고: GOOGLE_API_KEY가 설정되지 않았습니다.")
@@ -100,35 +107,32 @@ def gemini_api():
 
         # Gemini API가 설정된 경우 실제 API 호출
         if model:
-            try:
-                # 프롬프트 구성
-                prompt_parts = []
-                
-                if context:
-                    prompt_parts.append(f"컨텍스트: {context}")
-                
-                if chat_history:
-                    chat_text = "\n".join([f"{'사용자' if msg['sender'] == 'user' else '챗봇'}: {msg['message']}" for msg in chat_history])
-                    prompt_parts.append(f"대화 기록:\n{chat_text}")
-                
-                prompt_parts.append(f"사용자 메시지: {user_message}")
-                prompt_parts.append("위 상황에 대해 공감적이고 소크라틱한 질문으로 응답해주세요.")
+            # 프롬프트 구성
+            prompt_parts = []
+            if context:
+                prompt_parts.append(f"컨텍스트: {context}")
+            if chat_history:
+                chat_text = "\n".join([f"{'사용자' if msg['sender'] == 'user' else '챗봇'}: {msg['message']}" for msg in chat_history])
+                prompt_parts.append(f"대화 기록:\n{chat_text}")
+            prompt_parts.append(f"사용자 메시지: {user_message}")
+            prompt_parts.append("위 상황에 대해 공감적이고 소크라틱한 질문으로 응답해주세요.")
+            full_prompt = "\n\n".join(prompt_parts)
 
-                full_prompt = "\n\n".join(prompt_parts)
-
-                # Gemini API 호출
-                response = model.generate_content(full_prompt)
-                
-                if response.text:
-                    return jsonify({'response': response.text})
-                else:
-                    return jsonify({'error': '응답을 생성할 수 없습니다.'}), 500
-
-            except Exception as e:
-                print(f"Gemini API 호출 오류: {str(e)}")
-                # API 오류 시 모의 응답으로 폴백
-                mock_response = get_mock_response(user_message, context, chat_history)
-                return jsonify({'response': f"[API 오류로 인해 모의 응답입니다] {mock_response}"})
+            # 모델 폴백: pro → flash 순서 시도 (쿼터/모델 오류 우회)
+            candidate_models = ['gemini-1.5-pro', 'gemini-1.5-flash']
+            for model_name in candidate_models:
+                try:
+                    temp_model = genai.GenerativeModel(model_name)
+                    response = temp_model.generate_content(full_prompt)
+                    if response and getattr(response, 'text', None):
+                        return jsonify({'response': response.text})
+                except Exception as e:
+                    print(f"Gemini API 호출 오류({model_name}): {str(e)}")
+                    # 429(쿼터) 또는 모델 미지원 시 다음 후보로 폴백
+                    continue
+            # 모든 시도가 실패한 경우에만 모의 응답 사용
+            mock_response = get_mock_response(user_message, context, chat_history)
+            return jsonify({'response': f"[API 오류로 인해 모의 응답입니다] {mock_response}"})
 
         # Gemini API가 설정되지 않은 경우 모의 응답 사용
         else:
