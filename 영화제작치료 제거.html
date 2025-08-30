@@ -2126,7 +2126,6 @@ ${basePrompt}`;
                     <div class="phq9-card">
                         <!-- 워크플로우 안내 제거 -->
                         
-                        <h1 class="phq9-title">우울증 건강설문‑9 (PHQ‑9) — 한국판</h1>
                         <div class="phq9-sub">
                             지난 <b>2주</b> 동안 다음과 같은 문제들로 <b>얼마나 자주</b> 곤란을 겪었는지 선택하세요. (0=없음, 1=2–6일, 2=7–12일, 3=거의 매일)
                         </div>
@@ -2481,9 +2480,9 @@ ${basePrompt}`;
                     startBtn.disabled = false;
                     startBtn.style.background = '#27ae60';
                     startBtn.style.cursor = 'pointer';
-                    startBtn.textContent = '불안증상 검사 진행';
+                    startBtn.textContent = '다음 단계 진행';
                     
-                    advice.innerHTML = '<strong>💡 다음 단계:</strong> 해당 점수는 <b>0–14점</b> 범위이며, <b>9번 문항이 0점</b>입니다. <br><br><strong>이제 불안증상 검사(GAD-7)를 진행할 수 있습니다.</strong>';
+                    advice.innerHTML = '<strong>💡 다음 단계:</strong> 해당 점수는 <b>0–14점</b> 범위이며, <b>9번 문항이 0점</b>입니다.';
                     advice.className = 'phq9-note phq9-info';
                     
                 } else if (score > 14 || question9Score >= 1) {
@@ -3006,7 +3005,6 @@ ${basePrompt}`;
             screeningDiv.innerHTML = `
                 <div class="gad7-wrap">
                     <div class="gad7-card">
-                        <h1 class="gad7-title">2단계: 불안증상 검사 (GAD-7)</h1>
                         <div class="gad7-sub">
                             지난 2주일 동안 당신은 다음의 문제들로 인해서 얼마나 자주 방해를 받았습니까?
                         </div>
@@ -3113,9 +3111,9 @@ ${basePrompt}`;
                     startBtn.disabled = false;
                     startBtn.style.background = '#27ae60';
                     startBtn.style.cursor = 'pointer';
-                    startBtn.textContent = '불안증상 검사 진행';
+                    startBtn.textContent = '다음 단계 진행';
                     
-                    advice.innerHTML = '<strong>💡 다음 단계:</strong> 해당 점수는 <b>0–14점</b> 범위이며, <b>9번 문항이 0점</b>입니다. <br><br><strong>이제 불안증상 검사(GAD-7)를 진행할 수 있습니다.</strong>';
+                    advice.innerHTML = '<strong>💡 다음 단계:</strong> 해당 점수는 <b>0–14점</b> 범위이며, <b>9번 문항이 0점</b>입니다.';
                     advice.className = 'phq9-note phq9-info';
                     
                     // 불안증상 검사 진행 버튼만 표시
@@ -3478,9 +3476,9 @@ ${basePrompt}`;
                     startBtn.disabled = false;
                     startBtn.style.background = '#27ae60';
                     startBtn.style.cursor = 'pointer';
-                    startBtn.textContent = '불안증상 검사 진행';
+                    startBtn.textContent = '다음 단계 진행';
                     
-                    advice.innerHTML = '<strong>💡 다음 단계:</strong> 해당 점수는 <b>0–14점</b> 범위입니다. <br><br><strong>이제 불안증상 검사(GAD-7)를 진행할 수 있습니다.</strong>';
+                    advice.innerHTML = '<strong>💡 다음 단계:</strong> 해당 점수는 <b>0–14점</b> 범위입니다.';
                     advice.className = 'phq9-note phq9-info';
                 } else if (phq9Data.score > 14 || ((phq9Data.items && phq9Data.items['9']) ? phq9Data.items['9'] : 0) >= 1) {
                     startBtn.disabled = true;
@@ -3572,7 +3570,6 @@ ${basePrompt}`;
             screeningDiv.innerHTML = `
                 <div class="gad7-wrap">
                     <div class="gad7-card">
-                        <h1 class="gad7-title">2단계: 불안증상 검사 (GAD-7)</h1>
                         <div class="gad7-sub">
                             지난 <b>2주</b> 동안 당신은 다음의 문제들로 인해서 <b>얼마나 자주</b> 방해를 받았습니까?
                         </div>
