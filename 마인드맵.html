@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>마인드맵 에디터</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+    .node {
+      position: absolute;
+      padding: 10px 14px;
+      border: 1px solid #888;
+      border-radius: 8px;
+      background: white;
+      cursor: move;
+      user-select: none;
+      white-space: nowrap;
+    }
+    #canvas {
+      width: 100vw;
+      height: 100vh;
+      position: relative;
+    }
+    svg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+      z-index: 0;
+    }
+  </style>
+</head>
+<body>
+<div id="canvas">
+  <svg id="lines"></svg>
+</div>
+
+<script>
+const canvas = document.getElementById("canvas");
+const svg = document.getElementById("lines");
+let nodes = [];
+let connections = [];
+
+function createNode(text, x, y) {
+  const div = document.createElement("div");
+  div.className = "node";
+  div.textContent = text;
+  div.style.left = x + "px";
+  div.style.top = y + "px";
+
+  // 더블클릭으로 텍스트 편집
+  div.addEventListener("dblclick", () => {
+    const newText = prompt("노드 내용을 수정하세요:", div.textContent);
+    if (newText !== null) div.textContent = newText;
+    drawLines();
+  });
+
+  // 드래그 이동
+  div.onmousedown = function (e) {
+    let offsetX = e.offsetX;
+    let offsetY = e.offsetY;
+
+    function moveAt(clientX, clientY) {
+      div.style.left = clientX - offsetX + "px";
+      div.style.top = clientY - offsetY + "px";
+      drawLines();
+    }
+
+    function onMouseMove(e) {
+      moveAt(e.clientX, e.clientY);
+    }
+
+    document.addEventListener("mousemove", onMouseMove);
+    document.onmouseup = function () {
+      document.removeEventListener("mousemove", onMouseMove);
+      document.onmouseup = null;
+    };
+  };
+
+  canvas.appendChild(div);
+  nodes.push(div);
+  return div;
+}
+
+function connect(from, to) {
+  connections.push({ from, to });
+  drawLines();
+}
+
+function drawLines() {
+  svg.innerHTML = "";
+  svg.setAttribute("width", window.innerWidth);
+  svg.setAttribute("height", window.innerHeight);
+
+  connections.forEach(({ from, to }) => {
+    const x1 = from.offsetLeft + from.offsetWidth / 2;
+    const y1 = from.offsetTop + from.offsetHeight / 2;
+    const x2 = to.offsetLeft + to.offsetWidth / 2;
+    const y2 = to.offsetTop + to.offsetHeight / 2;
+    const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+    line.setAttribute("x1", x1);
+    line.setAttribute("y1", y1);
+    line.setAttribute("x2", x2);
+    line.setAttribute("y2", y2);
+    line.setAttribute("stroke", "#888");
+    line.setAttribute("stroke-width", "1.5");
+    svg.appendChild(line);
+  });
+}
+
+// 초기 노드 구성
+const center = createNode("주인공", window.innerWidth / 2 - 40, window.innerHeight / 2 - 30);
+const n1 = createNode("주변인물과 그들의 특징", center.offsetLeft - 200, center.offsetTop - 100);
+const n2 = createNode("학창시절 스토리", center.offsetLeft + 200, center.offsetTop - 100);
+const n3 = createNode("주인공의 취미 및 특기", center.offsetLeft + 220, center.offsetTop);
+const n4 = createNode("주인공의 욕망 및 꿈", center.offsetLeft - 250, center.offsetTop);
+const n5 = createNode("주요 갈등", center.offsetLeft, center.offsetTop + 130);
+const n6 = createNode("주인공의 강점과 자질", center.offsetLeft + 200, center.offsetTop + 120);
+const n7 = createNode("개인적 갈등", n5.offsetLeft - 180, n5.offsetTop + 100);
+const n8 = createNode("내적 갈등", n5.offsetLeft - 40, n5.offsetTop + 100);
+const n9 = createNode("초개인적 갈등", n5.offsetLeft + 100, n5.offsetTop + 100);
+
+connect(center, n1);
+connect(center, n2);
+connect(center, n3);
+connect(center, n4);
+connect(center, n5);
+connect(center, n6);
+connect(n5, n7);
+connect(n5, n8);
+connect(n5, n9);
+</script>
+</body>
+</html>

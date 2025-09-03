@@ -1827,6 +1827,7 @@ ${basePrompt}`;
                 // advice 요소 다음에 위기 상담 안내 추가
                 advice.parentNode.insertBefore(crisisDiv, advice.nextSibling);
             } else {
+                    // 9번 질문이 0점인 경우에만 다른 조건들 체크 else {
                 // 9번 질문에서 1점 미만인 경우 기존 게이팅 로직 적용
                 if(score >= 5 && score <= 14) {
                     // 경증 우울군: 바로 프로그램 시작 가능
@@ -2469,8 +2470,11 @@ ${basePrompt}`;
                     
                     // advice 요소 다음에 위기 상담 안내 추가
                     advice.parentNode.insertBefore(crisisDiv, advice.nextSibling);
+                    console.log('위기 상담 안내 추가됨:', crisisDiv);
+                    console.log('DOM에 삽입된 위치:', crisisDiv.parentNode);
+                    console.log('crisisDiv의 스타일:', window.getComputedStyle(crisisDiv));
                 } else {
-                    // 9번 질문에서 1점 미만인 경우 기존 게이팅 로직 적용
+                    // 9번 질문이 0점인 경우에만 다른 조건들 체크
                     if (riskAssessment.risk === 'high') {
                     startBtn.disabled = true;
                     advice.className = 'phq9-note phq9-warn';
@@ -2480,24 +2484,132 @@ ${basePrompt}`;
                     startBtn.disabled = false;
                     startBtn.style.background = '#27ae60';
                     startBtn.style.cursor = 'pointer';
-                    startBtn.textContent = '다음 단계 진행';
+                        startBtn.textContent = '다음 단계 진행';
                     
-                    advice.innerHTML = '<strong>💡 다음 단계:</strong> 해당 점수는 <b>0–14점</b> 범위이며, <b>9번 문항이 0점</b>입니다.';
+                        advice.innerHTML = '<strong>💡 다음 단계:</strong> 해당 점수는 <b>0–14점</b> 범위이며, <b>9번 문항이 0점</b>입니다.';
                     advice.className = 'phq9-note phq9-info';
                     
-                } else if (score > 14 || question9Score >= 1) {
-                    // 15점 이상이거나 9번 문항 1점 이상: 프로그램 시작 불가
+                    } else if (score > 14 && question9Score >= 1) {
+                        // 15점 이상이면서 9번 문항 1점 이상: 프로그램 시작 불가
                     startBtn.disabled = true;
                     startBtn.style.background = '#bdc3c7';
                     startBtn.style.cursor = 'not-allowed';
                     startBtn.textContent = '프로그램 시작 불가';
                     
-                    if (score > 14) {
-                        advice.innerHTML = '현재 점수는 <b>15점 이상</b>으로 불안증상 검사로 진행할 수 없습니다. 전문가 상담을 권합니다.';
-                    } else {
-                        advice.innerHTML = '9번 문항에 <b>1점 이상</b>이 있어 안전상 불안증상 검사로 진행할 수 없습니다.';
-                    }
+                        advice.innerHTML = '9번 문항에 <b>1점 이상</b>이 있어 안전상 다음 검사를 진행할 수 없습니다.';
                     advice.className = 'phq9-note phq9-warn';
+                    } else if (score > 14 && question9Score === 0) {
+                        // 15점 이상이면서 9번 문항 0점: 위기 상황 안내
+                        console.log('위기 상황 조건 충족:', { score, question9Score });
+                        console.log('responses 배열:', responses);
+                        console.log('9번 질문 점수 (responses[8]):', responses[8]);
+                        
+                        startBtn.disabled = true;
+                        startBtn.style.background = '#bdc3c7';
+                        startBtn.style.cursor = 'not-allowed';
+                        startBtn.textContent = '프로그램 시작 불가';
+                        
+                        advice.innerHTML = '⚠️ 안전 안내: 심한 우울 증상이 나타나고 있습니다. 즉시 전문가의 평가와 치료를 받으세요.';
+                        advice.className = 'phq9-note phq9-warn';
+                        
+                        // 기존 위기 상담 안내 요소가 있다면 제거
+                        const existingCrisis = document.querySelector('.crisis-guidance');
+                        if (existingCrisis) {
+                            existingCrisis.remove();
+                            console.log('기존 위기 상담 안내 제거됨');
+                        }
+                        
+                        // 위기 상담 안내 추가
+                        const crisisDiv = document.createElement('div');
+                        crisisDiv.className = 'crisis-guidance';
+                        crisisDiv.innerHTML = `
+                        <div style="background: rgb(255, 243, 205); border: 1px solid rgb(255, 234, 167); border-radius: 8px; padding: 16px; margin: 16px 0px; animation: 0.5s ease-in 0s 1 normal none running fadeIn;">
+                            <h4 style="margin: 0 0 12px; color: #856404;">⚠️ 위기 상황 대응 안내</h4>
+                            <p style="margin: 0 0 16px; color: #856404;">자해나 자살 생각이 있는 경우 즉시 전문가의 도움을 받으세요.</p>
+                            
+                            <h4 style="margin: 0 0 12px; color: #856404;">📞 위기 상담 연락처</h4>
+                            <table style="width: 100%; border-collapse: collapse; font-size: 13px;">
+                                <tbody><tr style="background: #fff8e1;">
+                                    <th style="border: 1px solid #ffeaa7; padding: 8px; text-align: left; width: 20%;">구분</th>
+                                    <th style="border: 1px solid #ffeaa7; padding: 8px; text-align: left; width: 40%;">기관/서비스명</th>
+                                    <th style="border: 1px solid #ffeaa7; padding: 8px; text-align: left; width: 25%;">전화/채팅</th>
+                                    <th style="border: 1px solid #ffeaa7; padding: 8px; text-align: left; width: 15%;">비고</th>
+                                </tr>
+                                <tr>
+                                    <td style="border: 1px solid #ffeaa7; padding: 8px; font-weight: bold; color: #e17055;">위기 상담</td>
+                                    <td style="border: 1px solid #ffeaa7; padding: 8px;">생명의 전화 1588-9191</td>
+                                    <td style="border: 1px solid #ffeaa7; padding: 8px;">전화</td>
+                                    <td style="border: 1px solid #ffeaa7; padding: 8px;">24시간, 자살·정서 위기 전문 상담, 비밀보장</td>
+                                </tr>
+                                <tr>
+                                    <td style="border: 1px solid #ffeaa7; padding: 8px; font-weight: bold; color: #e17055;">위기 상담</td>
+                                    <td style="border: 1px solid #ffeaa7; padding: 8px;">자살예방상담전화 1393</td>
+                                    <td style="border: 1px solid #ffeaa7; padding: 8px;">전화</td>
+                                    <td style="border: 1px solid #ffeaa7; padding: 8px;">24시간, 보건복지부·한국생명존중희망재단</td>
+                                </tr>
+                                <tr>
+                                    <td style="border: 1px solid #ffeaa7; padding: 8px; font-weight: bold; color: #e17055;">위기 상담</td>
+                                    <td style="border: 1px solid #ffeaa7; padding: 8px;">정신건강 상담전화 1577-0199</td>
+                                    <td style="border: 1px solid #ffeaa7; padding: 8px;">전화</td>
+                                    <td style="border: 1px solid #ffeaa7; padding: 8px;">24시간, 정신건강복지센터 연결</td>
+                                </tr>
+                                <tr>
+                                    <td style="border: 1px solid #ffeaa7; padding: 8px; font-weight: bold; color: #74b9ff;">청소년</td>
+                                    <td style="border: 1px solid #ffeaa7; padding: 8px;">청소년 전화 1388</td>
+                                    <td style="border: 1px solid #ffeaa7; padding: 8px;">전화·문자(#1388)·채팅</td>
+                                    <td style="border: 1px solid #ffeaa7; padding: 8px;">24시간, 청소년 대상 위기·정서 지원</td>
+                                </tr>
+                                <tr>
+                                    <td style="border: 1px solid #ffeaa7; padding: 8px; font-weight: bold; color: #6c5ce7;">채팅 중심</td>
+                                    <td style="border: 1px solid #ffeaa7; padding: 8px;">카카오톡 '자살예방상담' 채널</td>
+                                    <td style="border: 1px solid #ffeaa7; padding: 8px;">채팅</td>
+                                    <td style="border: 1px solid #ffeaa7; padding: 8px;">24시간, 1393 운영</td>
+                                </tr>
+                                <tr>
+                                    <td style="border: 1px solid #ffeaa7; padding: 8px; font-weight: bold; color: #d63031;">긴급</td>
+                                    <td style="border: 1px solid #ffeaa7; padding: 8px;">119</td>
+                                    <td style="border: 1px solid #ffeaa7; padding: 8px;">전화</td>
+                                    <td style="border: 1px solid #ffeaa7; padding: 8px;">자·타해 위험 즉시 구조</td>
+                                </tr>
+                                <tr>
+                                    <td style="border: 1px solid #ffeaa7; padding: 8px; font-weight: bold; color: #d63031;">긴급</td>
+                                    <td style="border: 1px solid #ffeaa7; padding: 8px;">112</td>
+                                    <td style="border: 1px solid #ffeaa7; padding: 8px;">전화</td>
+                                    <td style="border: 1px solid #ffeaa7; padding: 8px;">범죄·폭력 위험 포함 시</td>
+                                </tr>
+                                </tbody></table>
+                                
+                                <div style="margin-top: 16px; padding: 12px; background: #e8f5e8; border-radius: 6px; border-left: 4px solid #27ae60;">
+                                    <h4 style="margin: 0 0 12px; color: #27ae60;">💡 카카오톡 상담 채널</h4>
+                                    <p style="margin: 0 0 12px; color: #27ae60;">우울증 및 불안증 전문 상담을 위한 채널입니다.</p>
+                                    <div style="background: #f0f9ff; border: 1px solid #3b82f6; border-radius: 6px; padding: 12px; margin: 8px 0;">
+                                        <strong>다 들어줄 개:</strong> 
+                                        <a href="https://pf.kakao.com/_CxoBxcC" target="_blank" style="color: #2563eb; text-decoration: none; font-weight: 500;">
+                                            https://pf.kakao.com/_CxoBxcC
+                                        </a> ↗
+                                        <br><small style="color: #6b7280;">우울증 및 불안증 전문 상담, 24시간 채팅 상담 가능</small>
+                                    </div>
+                                    <div style="background: #f0f9ff; border: 1px solid #3b82f6; border-radius: 6px; padding: 12px; margin: 8px 0;">
+                                        <strong>마들랜:</strong> 
+                                        <a href="https://pf.kakao.com/_DAxbYG" target="_blank" style="color: #2563eb; text-decoration: none; font-weight: 500;">
+                                            https://pf.kakao.com/_DAxbYG
+                                        </a> ↗
+                                        <br><small style="color: #6b7280;">우울증 및 불안증 전문 상담, 24시간 채팅 상담 가능</small>
+                                    </div>
+                                </div>
+                                
+                                <div style="margin-top: 16px; padding: 12px; background: #e8f5e8; border-radius: 6px; border-left: 4px solid #27ae60;">
+                                    <strong>💡 심리상담 포털:</strong> 
+                                    <a href="https://www.mindinfo.kr/new/index.asp" target="_blank" style="color: #2563eb; text-decoration: none; font-weight: 500;">
+                                        https://www.mindinfo.kr/new/index.asp
+                                    </a> ↗
+                                    <br><small style="color: #6b7280;">상담심리사 찾기, 심리상담센터 찾기, 공공 심리상담 기관 및 서비스 정보 제공</small>
+                                </div>
+                            </div>`;
+                        
+                        // advice 요소 다음에 위기 상담 안내 추가
+                        advice.parentNode.insertBefore(crisisDiv, advice.nextSibling);
+                    }
                 } else if (score <= 4) {
                     // 0-4점: 정상 범위
                     startBtn.disabled = true;
