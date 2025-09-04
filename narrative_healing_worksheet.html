@@ -326,10 +326,74 @@
             transition: all 0.3s ease;
         }
 
-        .load-button:hover {
-            background: #1976d2;
-            transform: translateY(-2px);
-        }
+                 .load-button:hover {
+             background: #1976d2;
+             transform: translateY(-2px);
+         }
+
+         .circle-container {
+             position: relative;
+             width: 600px;
+             height: 600px;
+             margin: 40px auto;
+         }
+         
+         .circle {
+             position: absolute;
+             border-radius: 50%;
+             border: 2px solid #aaa;
+             left: 50%;
+             top: 50%;
+             transform: translate(-50%, -50%);
+         }
+         
+         .inner-circle { width: 200px; height: 200px; }
+         .middle-circle { width: 360px; height: 360px; }
+         .outer-circle { width: 520px; height: 520px; }
+
+         .label {
+             position: absolute;
+             font-weight: bold;
+             background: white;
+             padding: 3px 8px;
+         }
+         
+         .label-inner { top: 50%; left: 50%; transform: translate(-50%, -50%); }
+         .label-middle { top: 15%; left: 50%; transform: translate(-50%, -50%); }
+         .label-outer { top: -2%; left: 50%; transform: translate(-50%, -50%); }
+
+         .conflict-section {
+             width: 90%;
+             max-width: 600px;
+             margin: 30px auto;
+             padding: 20px;
+             border: 1px solid #ccc;
+             border-radius: 10px;
+             background: #f9f9f9;
+         }
+
+         .conflict-section h3 {
+             margin-bottom: 10px;
+             color: #333;
+         }
+
+         .conflict-section input[type="text"] {
+             width: 95%;
+             padding: 8px;
+             margin: 6px 0 12px;
+             border: 1px solid #ccc;
+             border-radius: 5px;
+         }
+
+         .radio-group {
+             display: flex;
+             justify-content: space-around;
+             flex-wrap: wrap;
+         }
+
+         .radio-group label {
+             margin: 5px;
+         }
 
         @media (max-width: 768px) {
             .container {
@@ -524,22 +588,31 @@
                     <textarea placeholder="예시: '청소년 시절, 남원에서 춘향이와 있었고, 나는 기쁨과 설렘을 느꼈다.'&#10;&#10;위 형식을 참고하여 과거의 중요한 사건을 자세히 기술해보세요."></textarea>
                 </div>
 
-                <h3>침습적 반추 여부</h3>
-                <div class="checkbox-group">
-                    <div class="checkbox-item">
-                        <input type="radio" name="intrusive" id="intrusive_yes" value="있음">
-                        <label for="intrusive_yes">침습적 반추 있음</label>
-                    </div>
-                    <div class="checkbox-item">
-                        <input type="radio" name="intrusive" id="intrusive_no" value="없음">
-                        <label for="intrusive_no">침습적 반추 없음</label>
-                    </div>
-                </div>
+                                 <h3>생각하고 싶지 않아도 저절로 떠오르는 생각</h3>
+                 <div class="checkbox-group">
+                     <div class="checkbox-item">
+                         <input type="radio" name="intrusive" id="intrusive_yes" value="있음" onchange="toggleIntrusiveInput()">
+                         <label for="intrusive_yes">있음</label>
+                     </div>
+                     <div class="checkbox-item">
+                         <input type="radio" name="intrusive" id="intrusive_no" value="없음" onchange="toggleIntrusiveInput()">
+                         <label for="intrusive_no">없음</label>
+                     </div>
+                 </div>
 
-                <h3>의도적 반추</h3>
-                <div class="quote-box">
-                    <textarea placeholder="그 경험을 의도적으로 떠올려보며 현재의 관점에서 어떻게 해석하는지, 어떤 의미를 부여하는지 작성해보세요.&#10;&#10;예시: '그 경험을 떠올리며 나는 따뜻함과 아쉬움을 다시 마주한다. 그 결과 나는 사랑이 때로는 성장의 자원이 될 수 있다는 걸 깨달았다.'"></textarea>
-                </div>
+                                   <div id="intrusive_yes_input" style="display: none;">
+                      <h3>생각하고 싶지 않아도 저절로 떠오르는 생각</h3>
+                      <div class="quote-box">
+                          <textarea placeholder="그 기억은 나를 ___하게 한다 / 그 기억 때문에 나는 ___하게 된다.&#10;&#10;위 형식을 참고하여 그 기억이 나에게 미치는 영향을 작성해보세요."></textarea>
+                      </div>
+                  </div>
+
+                 <div id="intrusive_no_input" style="display: none;">
+                     <h3>의도적 반추</h3>
+                     <div class="quote-box">
+                         <textarea placeholder="그 경험을 의도적으로 떠올려보며 현재의 관점에서 어떻게 해석하는지, 어떤 의미를 부여하는지 작성해보세요.&#10;&#10;예시: '그 경험을 떠올리며 나는 따뜻함과 아쉬움을 다시 마주한다. 그 결과 나는 사랑이 때로는 성장의 자원이 될 수 있다는 걸 깨달았다.'"></textarea>
+                     </div>
+                 </div>
 
                 <h3>현재의 영향 평가</h3>
                 <div class="checkbox-group">
@@ -605,112 +678,65 @@
                 </table>
             </div>
 
-            <!-- 5. 주요 갈등 -->
-            <div class="section">
-                <h2>5. 주요 갈등</h2>
-                <p class="highlight"><em>감정: DES 또는 PANAS 사용 가능 / 관계 유형: ✔ 지지 / ✖ 적대 / ± 혼합</em></p>
-                
-                <div class="conflict-grid">
-                    <div class="conflict-card">
-                        <h3>내적 갈등</h3>
-                        <p><strong>대상 또는 사건:</strong></p>
-                        <input type="text" placeholder="나 자신 (예: 무기력)" value="">
-                        <p><strong>주인공이 느낀 감정:</strong></p>
-                        <input type="text" placeholder="예: 수치심, 좌절 등" value="">
-                        <p><strong>감정을 촉발한 상황:</strong></p>
-                        <input type="text" placeholder="실패, 자아 분열 등" value="">
-                        <p><strong>관계 유형:</strong></p>
-                                                 <div class="checkbox-group">
-                             <div class="checkbox-item">
-                                 <input type="radio" name="conflict1" id="conflict1_very_hostile" value="매우 적대">
-                                 <label for="conflict1_very_hostile">매우 적대</label>
-                             </div>
-                             <div class="checkbox-item">
-                                 <input type="radio" name="conflict1" id="conflict1_hostile" value="적대">
-                                 <label for="conflict1_hostile">적대</label>
-                             </div>
-                             <div class="checkbox-item">
-                                 <input type="radio" name="conflict1" id="conflict1_neutral" value="보통">
-                                 <label for="conflict1_neutral">보통</label>
-                             </div>
-                             <div class="checkbox-item">
-                                 <input type="radio" name="conflict1" id="conflict1_support" value="지지">
-                                 <label for="conflict1_support">지지</label>
-                             </div>
-                             <div class="checkbox-item">
-                                 <input type="radio" name="conflict1" id="conflict1_very_support" value="매우 지지">
-                                 <label for="conflict1_very_support">매우 지지</label>
-                             </div>
-                         </div>
-                    </div>
-                    
-                    <div class="conflict-card">
-                        <h3>개인적 갈등</h3>
-                        <p><strong>대상 또는 사건:</strong></p>
-                        <input type="text" placeholder="인물 (예: 가족, 친구 등)" value="">
-                        <p><strong>주인공이 느낀 감정:</strong></p>
-                        <input type="text" placeholder="예: 분노, 상실감 등" value="">
-                        <p><strong>감정을 촉발한 상황:</strong></p>
-                        <input type="text" placeholder="무시, 충돌, 단절 등" value="">
-                        <p><strong>관계 유형:</strong></p>
-                                                 <div class="checkbox-group">
-                             <div class="checkbox-item">
-                                 <input type="radio" name="conflict2" id="conflict2_very_hostile" value="매우 적대">
-                                 <label for="conflict2_very_hostile">매우 적대</label>
-                             </div>
-                             <div class="checkbox-item">
-                                 <input type="radio" name="conflict2" id="conflict2_hostile" value="적대">
-                                 <label for="conflict2_hostile">적대</label>
-                             </div>
-                             <div class="checkbox-item">
-                                 <input type="radio" name="conflict2" id="conflict2_neutral" value="보통">
-                                 <label for="conflict2_neutral">보통</label>
-                             </div>
-                             <div class="checkbox-item">
-                                 <input type="radio" name="conflict2" id="conflict2_support" value="지지">
-                                 <label for="conflict2_support">지지</label>
-                             </div>
-                             <div class="checkbox-item">
-                                 <input type="radio" name="conflict2" id="conflict2_very_support" value="매우 지지">
-                                 <label for="conflict2_very_support">매우 지지</label>
-                             </div>
-                         </div>
-                    </div>
-                    
-                    <div class="conflict-card">
-                        <h3>초개인적 갈등</h3>
-                        <p><strong>대상 또는 사건:</strong></p>
-                        <input type="text" placeholder="제도/환경/사회" value="">
-                        <p><strong>주인공이 느낀 감정:</strong></p>
-                        <input type="text" placeholder="예: 체념, 억울함 등" value="">
-                        <p><strong>감정을 촉발한 상황:</strong></p>
-                        <input type="text" placeholder="차별, 빈곤, 불평등 등" value="">
-                        <p><strong>관계 유형:</strong></p>
-                                                 <div class="checkbox-group">
-                             <div class="checkbox-item">
-                                 <input type="radio" name="conflict3" id="conflict3_very_hostile" value="매우 적대">
-                                 <label for="conflict3_very_hostile">매우 적대</label>
-                             </div>
-                             <div class="checkbox-item">
-                                 <input type="radio" name="conflict3" id="conflict3_hostile" value="적대">
-                                 <label for="conflict3_hostile">적대</label>
-                             </div>
-                             <div class="checkbox-item">
-                                 <input type="radio" name="conflict3" id="conflict3_neutral" value="보통">
-                                 <label for="conflict3_neutral">보통</label>
-                             </div>
-                             <div class="checkbox-item">
-                                 <input type="radio" name="conflict3" id="conflict3_support" value="지지">
-                                 <label for="conflict3_support">지지</label>
-                             </div>
-                             <div class="checkbox-item">
-                                 <input type="radio" name="conflict3" id="conflict3_very_support" value="매우 지지">
-                                 <label for="conflict3_very_support">매우 지지</label>
-                             </div>
-                         </div>
-                    </div>
-                </div>
-            </div>
+                         <!-- 5. 주요 갈등 -->
+             <div class="section">
+                 <h2>5. 주요 갈등</h2>
+                 <p class="highlight"><em>감정: DES 또는 PANAS 사용 가능 / 관계 유형: ✔ 지지 / ✖ 적대 / ± 혼합</em></p>
+                 
+                 <div class="circle-container">
+                     <div class="circle outer-circle"></div>
+                     <div class="circle middle-circle"></div>
+                     <div class="circle inner-circle"></div>
+                     <div class="label label-inner">내적 갈등</div>
+                     <div class="label label-middle">개인적 갈등</div>
+                     <div class="label label-outer">초개인적 갈등</div>
+                 </div>
+
+                 <!-- 내적 갈등 -->
+                 <div class="conflict-section">
+                     <h3>1. 내적 갈등</h3>
+                     <input type="text" placeholder="대상 또는 사건 (예: 나 자신, 무기력 등)">
+                     <input type="text" placeholder="주인공이 느낀 감정 (예: 수치심, 혼란)">
+                     <input type="text" placeholder="감정을 촉발한 상황 (예: 실패, 후회)">
+                     <div class="radio-group">
+                         <label><input type="radio" name="inner_relation" value="매우 적대"> 매우 적대</label>
+                         <label><input type="radio" name="inner_relation" value="적대"> 적대</label>
+                         <label><input type="radio" name="inner_relation" value="보통"> 보통</label>
+                         <label><input type="radio" name="inner_relation" value="지지"> 지지</label>
+                         <label><input type="radio" name="inner_relation" value="매우 지지"> 매우 지지</label>
+                     </div>
+                 </div>
+
+                 <!-- 개인적 갈등 -->
+                 <div class="conflict-section">
+                     <h3>2. 개인적 갈등</h3>
+                     <input type="text" placeholder="대상 또는 사건 (예: 가족, 친구, 연인)">
+                     <input type="text" placeholder="주인공이 느낀 감정 (예: 분노, 상실감)">
+                     <input type="text" placeholder="감정을 촉발한 상황 (예: 단절, 거절)">
+                     <div class="radio-group">
+                         <label><input type="radio" name="interpersonal_relation" value="매우 적대"> 매우 적대</label>
+                         <label><input type="radio" name="interpersonal_relation" value="적대"> 적대</label>
+                         <label><input type="radio" name="interpersonal_relation" value="보통"> 보통</label>
+                         <label><input type="radio" name="interpersonal_relation" value="지지"> 지지</label>
+                         <label><input type="radio" name="interpersonal_relation" value="매우 지지"> 매우 지지</label>
+                     </div>
+                 </div>
+
+                 <!-- 초개인적 갈등 -->
+                 <div class="conflict-section">
+                     <h3>3. 초개인적 갈등</h3>
+                     <input type="text" placeholder="대상 또는 사건 (예: 사회, 제도, 환경)">
+                     <input type="text" placeholder="주인공이 느낀 감정 (예: 억울함, 체념)">
+                     <input type="text" placeholder="감정을 촉발한 상황 (예: 취업 실패, 제도적 차별)">
+                     <div class="radio-group">
+                         <label><input type="radio" name="societal_relation" value="매우 적대"> 매우 적대</label>
+                         <label><input type="radio" name="societal_relation" value="적대"> 적대</label>
+                         <label><input type="radio" name="societal_relation" value="보통"> 보통</label>
+                         <label><input type="radio" name="societal_relation" value="지지"> 지지</label>
+                         <label><input type="radio" name="societal_relation" value="매우 지지"> 매우 지지</label>
+                     </div>
+                 </div>
+             </div>
 
             <!-- 6. 강점과 자질 -->
             <div class="section">
@@ -833,101 +859,120 @@
              }
          }
 
-         // 주변 인물 추가 기능
-         let characterCount = 1;
-         
-         function addCharacter() {
-             characterCount++;
-             const table = document.getElementById('characters-table');
-             const tbody = table.querySelector('tbody');
-             const thead = table.querySelector('thead tr');
-             
-             // 헤더에 새 컬럼 추가
-             const newHeaderCell = document.createElement('th');
-             newHeaderCell.innerHTML = `주변 인물 ${characterCount} <button class="remove-character-btn" onclick="removeCharacter(${characterCount})" title="삭제">×</button>`;
-             thead.appendChild(newHeaderCell);
-             
-             // 각 행에 새 셀 추가
-             const rows = tbody.querySelectorAll('tr');
-             rows.forEach((row, index) => {
-                 const newCell = document.createElement('td');
-                 newCell.className = 'editable-cell';
-                 
-                 if (index === 0) { // 이름
-                     newCell.innerHTML = '<input type="text" placeholder="인물의 이름" value="">';
-                 } else if (index === 1) { // 관계 범주
-                     newCell.innerHTML = '<input type="text" placeholder="가족/친구/기타" value="">';
-                 } else if (index === 2) { // 지지 여부
-                     newCell.innerHTML = `
-                         <div class="likert-scale">
-                             <div class="likert-item">
-                                 <input type="radio" name="support${characterCount}" id="support${characterCount}_very_hostile" value="매우 적대">
-                                 <label for="support${characterCount}_very_hostile">매우 적대</label>
-                             </div>
-                             <div class="likert-item">
-                                 <input type="radio" name="support${characterCount}" id="support${characterCount}_hostile" value="적대">
-                                 <label for="support${characterCount}_hostile">적대</label>
-                             </div>
-                             <div class="likert-item">
-                                 <input type="radio" name="support${characterCount}" id="support${characterCount}_neutral" value="보통">
-                                 <label for="support${characterCount}_neutral">보통</label>
-                             </div>
-                             <div class="likert-item">
-                                 <input type="radio" name="support${characterCount}" id="support${characterCount}_support" value="지지">
-                                 <label for="support${characterCount}_support">지지</label>
-                             </div>
-                             <div class="likert-item">
-                                 <input type="radio" name="support${characterCount}" id="support${characterCount}_very_support" value="매우 지지">
-                                 <label for="support${characterCount}_very_support">매우 지지</label>
-                             </div>
-                         </div>
-                     `;
-                 } else if (index === 3) { // 인물 특징
-                     newCell.innerHTML = '<input type="text" placeholder="인물의 특징" value="">';
-                 } else if (index === 4) { // 주인공에게 준 영향
-                     newCell.innerHTML = '<input type="text" placeholder="미친 영향" value="">';
-                 }
-                 
-                 row.appendChild(newCell);
-             });
-         }
-         
-         function removeCharacter(characterNumber) {
-             const table = document.getElementById('characters-table');
-             const tbody = table.querySelector('tbody');
-             const thead = table.querySelector('thead tr');
-             
-             // 최소 1명은 유지
-             const currentColumns = thead.querySelectorAll('th').length;
-             if (currentColumns <= 2) {
-                 alert('최소 1명의 주변 인물은 유지해야 합니다.');
-                 return;
-             }
-             
-             // 헤더에서 해당 컬럼 제거
-             const headerCells = thead.querySelectorAll('th');
-             headerCells[characterNumber].remove();
-             
-             // 각 행에서 해당 컬럼 제거
-             const rows = tbody.querySelectorAll('tr');
-             rows.forEach(row => {
-                 const cells = row.querySelectorAll('td');
-                 if (cells[characterNumber]) {
-                     cells[characterNumber].remove();
-                 }
-             });
-             
-             // 번호 재정렬
-             const remainingHeaders = thead.querySelectorAll('th');
-             remainingHeaders.forEach((header, index) => {
-                 if (index > 0) { // 첫 번째 헤더(항목)는 제외
-                     const button = header.querySelector('button');
-                     if (button) {
-                         button.onclick = () => removeCharacter(index);
-                     }
-                 }
-             });
-         }
+                   // 주변 인물 추가 기능
+          let characterCount = 1;
+          
+          function addCharacter() {
+              characterCount++;
+              const table = document.getElementById('characters-table');
+              const tbody = table.querySelector('tbody');
+              const thead = table.querySelector('thead tr');
+              
+              // 헤더에 새 컬럼 추가
+              const newHeaderCell = document.createElement('th');
+              newHeaderCell.innerHTML = `주변 인물 ${characterCount} <button class="remove-character-btn" onclick="removeCharacter(${characterCount})" title="삭제">×</button>`;
+              thead.appendChild(newHeaderCell);
+              
+              // 각 행에 새 셀 추가
+              const rows = tbody.querySelectorAll('tr');
+              rows.forEach((row, index) => {
+                  const newCell = document.createElement('td');
+                  newCell.className = 'editable-cell';
+                  
+                  if (index === 0) { // 이름
+                      newCell.innerHTML = '<input type="text" placeholder="인물의 이름" value="">';
+                  } else if (index === 1) { // 관계 범주
+                      newCell.innerHTML = '<input type="text" placeholder="가족/친구/기타" value="">';
+                  } else if (index === 2) { // 지지 여부
+                      newCell.innerHTML = `
+                          <div class="likert-scale">
+                              <div class="likert-item">
+                                  <input type="radio" name="support${characterCount}" id="support${characterCount}_very_hostile" value="매우 적대">
+                                  <label for="support${characterCount}_very_hostile">매우 적대</label>
+                              </div>
+                              <div class="likert-item">
+                                  <input type="radio" name="support${characterCount}" id="support${characterCount}_hostile" value="적대">
+                                  <label for="support${characterCount}_hostile">적대</label>
+                              </div>
+                              <div class="likert-item">
+                                  <input type="radio" name="support${characterCount}" id="support${characterCount}_neutral" value="보통">
+                                  <label for="support${characterCount}_neutral">보통</label>
+                              </div>
+                              <div class="likert-item">
+                                  <input type="radio" name="support${characterCount}" id="support${characterCount}_support" value="지지">
+                                  <label for="support${characterCount}_support">지지</label>
+                              </div>
+                              <div class="likert-item">
+                                  <input type="radio" name="support${characterCount}" id="support${characterCount}_very_support" value="매우 지지">
+                                  <label for="support${characterCount}_very_support">매우 지지</label>
+                              </div>
+                          </div>
+                      `;
+                  } else if (index === 3) { // 인물 특징
+                      newCell.innerHTML = '<input type="text" placeholder="인물의 특징" value="">';
+                  } else if (index === 4) { // 주인공에게 준 영향
+                      newCell.innerHTML = '<input type="text" placeholder="미친 영향" value="">';
+                  }
+                  
+                  row.appendChild(newCell);
+              });
+          }
+          
+          function removeCharacter(characterNumber) {
+              const table = document.getElementById('characters-table');
+              const tbody = table.querySelector('tbody');
+              const thead = table.querySelector('thead tr');
+              
+              // 최소 1명은 유지
+              const currentColumns = thead.querySelectorAll('th').length;
+              if (currentColumns <= 2) {
+                  alert('최소 1명의 주변 인물은 유지해야 합니다.');
+                  return;
+              }
+              
+              // 헤더에서 해당 컬럼 제거
+              const headerCells = thead.querySelectorAll('th');
+              headerCells[characterNumber].remove();
+              
+              // 각 행에서 해당 컬럼 제거
+              const rows = tbody.querySelectorAll('tr');
+              rows.forEach(row => {
+                  const cells = row.querySelectorAll('td');
+                  if (cells[characterNumber]) {
+                      cells[characterNumber].remove();
+                  }
+              });
+              
+              // 번호 재정렬
+              const remainingHeaders = thead.querySelectorAll('th');
+              remainingHeaders.forEach((header, index) => {
+                  if (index > 0) { // 첫 번째 헤더(항목)는 제외
+                      const button = header.querySelector('button');
+                      if (button) {
+                          button.onclick = () => removeCharacter(index);
+                      }
+                  }
+              });
+          }
+
+          // 침습적 반추 입력 필드 토글 기능
+          function toggleIntrusiveInput() {
+              const yesInput = document.getElementById('intrusive_yes_input');
+              const noInput = document.getElementById('intrusive_no_input');
+              const yesRadio = document.getElementById('intrusive_yes');
+              const noRadio = document.getElementById('intrusive_no');
+              
+              if (yesRadio.checked) {
+                  yesInput.style.display = 'block';
+                  noInput.style.display = 'none';
+              } else if (noRadio.checked) {
+                  yesInput.style.display = 'none';
+                  noInput.style.display = 'block';
+              } else {
+                  yesInput.style.display = 'none';
+                  noInput.style.display = 'none';
+              }
+          }
 
 
      </script>
