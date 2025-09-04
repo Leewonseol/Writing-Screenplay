@@ -133,12 +133,21 @@
              flex-wrap: wrap;
          }
 
-         .likert-scale {
-             display: flex;
-             flex-direction: column;
-             gap: 8px;
-             margin: 10px 0;
-         }
+                   .likert-scale {
+              display: flex;
+              flex-direction: column;
+              gap: 8px;
+              margin: 10px 0;
+          }
+
+          .likert-scale-horizontal {
+              display: flex;
+              flex-direction: row;
+              gap: 15px;
+              margin: 10px 0;
+              flex-wrap: wrap;
+              justify-content: space-between;
+          }
 
          .likert-item {
              display: flex;
@@ -237,6 +246,15 @@
         textarea {
             resize: vertical;
             min-height: 100px;
+        }
+        .editable-cell textarea {
+            width: 100%;
+            min-height: 60px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 8px;
+            font-family: inherit;
+            font-size: 0.95rem;
         }
 
         .editable-cell {
@@ -588,7 +606,7 @@
                      <textarea placeholder="예시: '청소년 시절, 남원에서 춘향이와 있었고, 나는 기쁨과 설렘을 느꼈다.'&#10;&#10;위 형식을 참고하여 과거의 중요한 사건을 자세히 기술해보세요."></textarea>
                  </div>
 
-                 <h3>생각하고 싶지 않아도 저절로 떠오르는 생각</h3>
+                 <h3>생각하고 싶지 않아도 저절로 떠오르는 기억</h3>
                  <div class="checkbox-group">
                      <div class="checkbox-item">
                          <input type="radio" name="intrusive" id="intrusive_yes" value="있음" onchange="toggleIntrusiveInput()">
@@ -601,43 +619,47 @@
                  </div>
 
                  <div id="intrusive_yes_input" style="display: none;">
-                     <h3>🌀 침습적 반추</h3>
+                     <h3>🌀 생각하고 싶지 않아도 저절로 떠오르는 기억</h3>
                      <div class="quote-box">
                          <textarea placeholder="그 기억은 나를 ___하게 한다 / 그 기억 때문에 나는 ___하게 된다.&#10;&#10;위 형식을 참고하여 그 기억이 나에게 미치는 영향을 작성해보세요."></textarea>
                      </div>
                      
-                     <h3>☀️ 의도적 반추 (침습 여부 무관하게 작성)</h3>
+                     <h3>☀️ 주인공이 능동적으로 떠올리는 기억</h3>
                      <div class="quote-box">
                          <textarea placeholder="그 경험을 떠올리며 나는 (감정)을 다시 마주한다.&#10;그 결과 나는 ___을 배웠다 / 깨달았다 / 다르게 느끼게 되었다.&#10;&#10;위 형식을 참고하여 그 경험의 의미를 작성해보세요."></textarea>
                      </div>
                  </div>
 
                  <div id="intrusive_no_input" style="display: none;">
-                     <h3>☀️ 의도적 반추 (침습 여부 무관하게 작성)</h3>
+                     <h3>☀️ 주인공이 능동적으로 떠올리는 기억</h3>
                      <div class="quote-box">
                          <textarea placeholder="그 경험을 떠올리며 나는 (감정)을 다시 마주한다.&#10;그 결과 나는 ___을 배웠다 / 깨달았다 / 다르게 느끼게 되었다.&#10;&#10;위 형식을 참고하여 그 경험의 의미를 작성해보세요."></textarea>
                      </div>
                  </div>
 
-                 <h3>그리고 그 사건은 지금의 내 삶에서:</h3>
-                 <div class="checkbox-group">
-                     <div class="checkbox-item">
-                         <input type="checkbox" id="impact_none" value="아무런 영향도 없다">
-                         <label for="impact_none">▷ 아무런 영향도 없다.</label>
-                     </div>
-                     <div class="checkbox-item">
-                         <input type="checkbox" id="impact_direction" value="여전히 종종 떠오르며 방향을 바꾼다">
-                         <label for="impact_direction">▷ 여전히 종종 떠오르며 방향을 바꾼다.</label>
-                     </div>
-                     <div class="checkbox-item">
-                         <input type="checkbox" id="impact_stronger" value="나를 더 단단하게 만들었다">
-                         <label for="impact_stronger">▷ 나를 더 단단하게 만들었다.</label>
-                     </div>
-                     <div class="checkbox-item">
-                         <input type="checkbox" id="impact_unknown" value="아직 잘 모르겠다">
-                         <label for="impact_unknown">▷ 아직 잘 모르겠다.</label>
-                     </div>
-                 </div>
+                                   <h3>결과적으로 그 기억은 내 삶에서:</h3>
+                                                                       <div class="likert-scale">
+                       <div class="likert-item">
+                           <input type="radio" name="memory_impact" id="impact_1" value="전혀 영향을 주지 않는다">
+                           <label for="impact_1">전혀 영향을 주지 않는다</label>
+                       </div>
+                       <div class="likert-item">
+                           <input type="radio" name="memory_impact" id="impact_2" value="거의 떠오르지 않고, 삶에 영향을 주지 않는다">
+                           <label for="impact_2">거의 떠오르지 않고, 삶에 영향을 주지 않는다</label>
+                       </div>
+                       <div class="likert-item">
+                           <input type="radio" name="memory_impact" id="impact_3" value="가끔 떠오르지만, 삶에 큰 영향을 주지는 않는다">
+                           <label for="impact_3">가끔 떠오르지만, 삶에 큰 영향을 주지는 않는다</label>
+                       </div>
+                       <div class="likert-item">
+                           <input type="radio" name="memory_impact" id="impact_4" value="자주 떠오르며, 내 생각이나 방향에 영향을 주곤 한다">
+                           <label for="impact_4">자주 떠오르며, 내 생각이나 방향에 영향을 주곤 한다</label>
+                       </div>
+                       <div class="likert-item">
+                           <input type="radio" name="memory_impact" id="impact_5" value="내가 성장하고 단단해지는 데 깊은 영향을 주었다">
+                           <label for="impact_5">내가 성장하고 단단해지는 데 깊은 영향을 주었다</label>
+                       </div>
+                   </div>
             </div>
 
             <!-- 4. 욕망 및 꿈 -->
@@ -715,31 +737,105 @@
                  <!-- 개인적 갈등 -->
                  <div class="conflict-section">
                      <h3>2. 개인적 갈등</h3>
-                     <input type="text" placeholder="대상 또는 사건 (예: 가족, 친구, 연인)">
-                     <input type="text" placeholder="주인공이 느낀 감정 (예: 분노, 상실감)">
-                     <input type="text" placeholder="감정을 촉발한 상황 (예: 단절, 거절)">
-                     <div class="radio-group">
-                         <label><input type="radio" name="interpersonal_relation" value="매우 적대"> 매우 적대</label>
-                         <label><input type="radio" name="interpersonal_relation" value="적대"> 적대</label>
-                         <label><input type="radio" name="interpersonal_relation" value="보통"> 보통</label>
-                         <label><input type="radio" name="interpersonal_relation" value="지지"> 지지</label>
-                         <label><input type="radio" name="interpersonal_relation" value="매우 지지"> 매우 지지</label>
-                     </div>
+                     <table id="personal-conflict-table">
+                         <thead>
+                             <tr>
+                                 <th>구분</th>
+                                 <th>대상/사건</th>
+                                 <th>감정</th>
+                                 <th>상황</th>
+                                 <th>관계 유형</th>
+                                 <th>삭제</th>
+                             </tr>
+                         </thead>
+                         <tbody>
+                             <tr>
+                                 <td>개인적1</td>
+                                 <td class="editable-cell"><textarea placeholder="누나"></textarea></td>
+                                 <td class="editable-cell"><textarea placeholder="분노"></textarea></td>
+                                 <td class="editable-cell"><textarea placeholder="무시당함"></textarea></td>
+                                 <td>
+                                     <select name="interpersonal_relation_1">
+                                         <option value="매우 적대">매우 적대</option>
+                                         <option value="적대" selected>적대</option>
+                                         <option value="보통">보통</option>
+                                         <option value="지지">지지</option>
+                                         <option value="매우 지지">매우 지지</option>
+                                     </select>
+                                 </td>
+                                 <td><button class="remove-character-btn" onclick="removeRow(this)">×</button></td>
+                             </tr>
+                             <tr>
+                                 <td>개인적2</td>
+                                 <td class="editable-cell"><textarea placeholder="친구"></textarea></td>
+                                 <td class="editable-cell"><textarea placeholder="거리감"></textarea></td>
+                                 <td class="editable-cell"><textarea placeholder="거절당함"></textarea></td>
+                                 <td>
+                                     <select name="interpersonal_relation_2">
+                                         <option value="매우 적대">매우 적대</option>
+                                         <option value="적대">적대</option>
+                                         <option value="보통" selected>보통</option>
+                                         <option value="지지">지지</option>
+                                         <option value="매우 지지">매우 지지</option>
+                                     </select>
+                                 </td>
+                                 <td><button class="remove-character-btn" onclick="removeRow(this)">×</button></td>
+                             </tr>
+                         </tbody>
+                     </table>
+                     <button class="add-character-btn" onclick="addPersonalConflictRow()">➕ 행 추가</button>
                  </div>
-
+ 
                  <!-- 초개인적 갈등 -->
                  <div class="conflict-section">
                      <h3>3. 초개인적 갈등</h3>
-                     <input type="text" placeholder="대상 또는 사건 (예: 사회, 제도, 환경)">
-                     <input type="text" placeholder="주인공이 느낀 감정 (예: 억울함, 체념)">
-                     <input type="text" placeholder="감정을 촉발한 상황 (예: 취업 실패, 제도적 차별)">
-                     <div class="radio-group">
-                         <label><input type="radio" name="societal_relation" value="매우 적대"> 매우 적대</label>
-                         <label><input type="radio" name="societal_relation" value="적대"> 적대</label>
-                         <label><input type="radio" name="societal_relation" value="보통"> 보통</label>
-                         <label><input type="radio" name="societal_relation" value="지지"> 지지</label>
-                         <label><input type="radio" name="societal_relation" value="매우 지지"> 매우 지지</label>
-                     </div>
+                     <table id="societal-conflict-table">
+                         <thead>
+                             <tr>
+                                 <th>구분</th>
+                                 <th>대상/사건</th>
+                                 <th>감정</th>
+                                 <th>상황</th>
+                                 <th>관계 유형</th>
+                                 <th>삭제</th>
+                             </tr>
+                         </thead>
+                         <tbody>
+                             <tr>
+                                 <td>초개인적1</td>
+                                 <td class="editable-cell"><textarea placeholder="학벌 구조"></textarea></td>
+                                 <td class="editable-cell"><textarea placeholder="체념"></textarea></td>
+                                 <td class="editable-cell"><textarea placeholder="취업 탈락"></textarea></td>
+                                 <td>
+                                     <select name="societal_relation_1">
+                                         <option value="매우 적대" selected>매우 적대</option>
+                                         <option value="적대">적대</option>
+                                         <option value="보통">보통</option>
+                                         <option value="지지">지지</option>
+                                         <option value="매우 지지">매우 지지</option>
+                                     </select>
+                                 </td>
+                                 <td><button class="remove-character-btn" onclick="removeRow(this)">×</button></td>
+                             </tr>
+                             <tr>
+                                 <td>초개인적2</td>
+                                 <td class="editable-cell"><textarea placeholder="병원 시스템"></textarea></td>
+                                 <td class="editable-cell"><textarea placeholder="무력감"></textarea></td>
+                                 <td class="editable-cell"><textarea placeholder="상담 연결 안 됨"></textarea></td>
+                                 <td>
+                                     <select name="societal_relation_2">
+                                         <option value="매우 적대">매우 적대</option>
+                                         <option value="적대" selected>적대</option>
+                                         <option value="보통">보통</option>
+                                         <option value="지지">지지</option>
+                                         <option value="매우 지지">매우 지지</option>
+                                     </select>
+                                 </td>
+                                 <td><button class="remove-character-btn" onclick="removeRow(this)">×</button></td>
+                             </tr>
+                         </tbody>
+                     </table>
+                     <button class="add-character-btn" onclick="addSocietalConflictRow()">➕ 행 추가</button>
                  </div>
              </div>
 
@@ -863,6 +959,108 @@
                  alert('저장된 데이터가 없습니다.');
              }
          }
+
+        // 텍스트에어리어 자동 리사이즈
+        document.addEventListener('input', function(e) {
+            if (e.target && e.target.tagName === 'TEXTAREA') {
+                e.target.style.height = 'auto';
+                e.target.style.height = (e.target.scrollHeight) + 'px';
+            }
+        });
+
+        // 행 추가용 카운터
+        let personalConflictCount = 2;
+        let societalConflictCount = 2;
+
+        function addPersonalConflictRow() {
+            personalConflictCount++;
+            const tbody = document.querySelector('#personal-conflict-table tbody');
+            if (!tbody) return;
+            const rowNumber = personalConflictCount;
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>개인적${rowNumber}</td>
+                <td class="editable-cell"><textarea placeholder="대상/사건"></textarea></td>
+                <td class="editable-cell"><textarea placeholder="감정"></textarea></td>
+                <td class="editable-cell"><textarea placeholder="상황"></textarea></td>
+                <td>
+                    <select name="interpersonal_relation_${rowNumber}">
+                        <option value="매우 적대">매우 적대</option>
+                        <option value="적대">적대</option>
+                        <option value="보통" selected>보통</option>
+                        <option value="지지">지지</option>
+                        <option value="매우 지지">매우 지지</option>
+                    </select>
+                </td>
+                <td><button class="remove-character-btn" onclick="removeRow(this)">×</button></td>
+            `;
+            tbody.appendChild(tr);
+        }
+
+        function removePersonalConflictRow(rowNumber) {
+            const table = document.getElementById('personal-conflict-table');
+            const tbody = table.querySelector('tbody');
+            const rows = tbody.querySelectorAll('tr');
+            const rowToRemove = rows.find(row => row.querySelector('td:first-child').textContent.includes(`개인적${rowNumber}`));
+
+            if (rows.length <= 2) { // 최소 1명은 유지
+                alert('최소 1명의 주변 인물은 유지해야 합니다.');
+                return;
+            }
+
+            rowToRemove.remove();
+
+            // 번호 재정렬
+            const remainingRows = tbody.querySelectorAll('tr');
+            remainingRows.forEach((row, index) => {
+                const firstCell = row.querySelector('td:first-child');
+                if (firstCell) {
+                    const button = row.querySelector('.remove-character-btn');
+                    if (button) {
+                        button.onclick = () => removePersonalConflictRow(index + 1);
+                    }
+                }
+            });
+        }
+
+        function addSocietalConflictRow() {
+            societalConflictCount++;
+            const tbody = document.querySelector('#societal-conflict-table tbody');
+            if (!tbody) return;
+            const rowNumber = societalConflictCount;
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>초개인적${rowNumber}</td>
+                <td class="editable-cell"><textarea placeholder="대상/사건"></textarea></td>
+                <td class="editable-cell"><textarea placeholder="감정"></textarea></td>
+                <td class="editable-cell"><textarea placeholder="상황"></textarea></td>
+                <td>
+                    <select name="societal_relation_${rowNumber}">
+                        <option value="매우 적대">매우 적대</option>
+                        <option value="적대">적대</option>
+                        <option value="보통" selected>보통</option>
+                        <option value="지지">지지</option>
+                        <option value="매우 지지">매우 지지</option>
+                    </select>
+                </td>
+                <td><button class="remove-character-btn" onclick="removeRow(this)">×</button></td>
+            `;
+            tbody.appendChild(tr);
+        }
+
+        function removeRow(button) {
+            const tr = button.closest('tr');
+            if (!tr) return;
+            const table = tr.closest('table');
+            const tbody = table ? table.querySelector('tbody') : null;
+            if (!tbody) return;
+            // Ensure at least 2 rows remain
+            if (tbody.rows.length <= 2) {
+                alert('최소 2개의 항목은 유지해야 합니다.');
+                return;
+            }
+            tbody.removeChild(tr);
+        }
 
                    // 주변 인물 추가 기능
           let characterCount = 1;
