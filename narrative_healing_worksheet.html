@@ -583,12 +583,12 @@
                 <h2>3. 과거의 사건</h2>
                 <p class="highlight"><em>출처: 안현의 외, 2013 / K-ERRI 기반</em></p>
                 
-                <h3>기억 기본 프레임</h3>
-                <div class="quote-box">
-                    <textarea placeholder="예시: '청소년 시절, 남원에서 춘향이와 있었고, 나는 기쁨과 설렘을 느꼈다.'&#10;&#10;위 형식을 참고하여 과거의 중요한 사건을 자세히 기술해보세요."></textarea>
-                </div>
+                                 <h3>기억 기본 프레임</h3>
+                 <div class="quote-box">
+                     <textarea placeholder="예시: '청소년 시절, 남원에서 춘향이와 있었고, 나는 기쁨과 설렘을 느꼈다.'&#10;&#10;위 형식을 참고하여 과거의 중요한 사건을 자세히 기술해보세요."></textarea>
+                 </div>
 
-                                 <h3>생각하고 싶지 않아도 저절로 떠오르는 생각</h3>
+                 <h3>생각하고 싶지 않아도 저절로 떠오르는 생각</h3>
                  <div class="checkbox-group">
                      <div class="checkbox-item">
                          <input type="radio" name="intrusive" id="intrusive_yes" value="있음" onchange="toggleIntrusiveInput()">
@@ -600,39 +600,44 @@
                      </div>
                  </div>
 
-                                   <div id="intrusive_yes_input" style="display: none;">
-                      <h3>생각하고 싶지 않아도 저절로 떠오르는 생각</h3>
-                      <div class="quote-box">
-                          <textarea placeholder="그 기억은 나를 ___하게 한다 / 그 기억 때문에 나는 ___하게 된다.&#10;&#10;위 형식을 참고하여 그 기억이 나에게 미치는 영향을 작성해보세요."></textarea>
-                      </div>
-                  </div>
-
-                 <div id="intrusive_no_input" style="display: none;">
-                     <h3>의도적 반추</h3>
+                 <div id="intrusive_yes_input" style="display: none;">
+                     <h3>🌀 침습적 반추</h3>
                      <div class="quote-box">
-                         <textarea placeholder="그 경험을 의도적으로 떠올려보며 현재의 관점에서 어떻게 해석하는지, 어떤 의미를 부여하는지 작성해보세요.&#10;&#10;예시: '그 경험을 떠올리며 나는 따뜻함과 아쉬움을 다시 마주한다. 그 결과 나는 사랑이 때로는 성장의 자원이 될 수 있다는 걸 깨달았다.'"></textarea>
+                         <textarea placeholder="그 기억은 나를 ___하게 한다 / 그 기억 때문에 나는 ___하게 된다.&#10;&#10;위 형식을 참고하여 그 기억이 나에게 미치는 영향을 작성해보세요."></textarea>
+                     </div>
+                     
+                     <h3>☀️ 의도적 반추 (침습 여부 무관하게 작성)</h3>
+                     <div class="quote-box">
+                         <textarea placeholder="그 경험을 떠올리며 나는 (감정)을 다시 마주한다.&#10;그 결과 나는 ___을 배웠다 / 깨달았다 / 다르게 느끼게 되었다.&#10;&#10;위 형식을 참고하여 그 경험의 의미를 작성해보세요."></textarea>
                      </div>
                  </div>
 
-                <h3>현재의 영향 평가</h3>
-                <div class="checkbox-group">
-                    <div class="checkbox-item">
-                        <input type="checkbox" id="impact_none" value="아무런 영향도 없다">
-                        <label for="impact_none">아무런 영향도 없다</label>
-                    </div>
-                    <div class="checkbox-item">
-                        <input type="checkbox" id="impact_direction" value="여전히 종종 떠오르며 방향을 바꾼다">
-                        <label for="impact_direction">여전히 종종 떠오르며 방향을 바꾼다</label>
-                    </div>
-                    <div class="checkbox-item">
-                        <input type="checkbox" id="impact_stronger" value="나를 더 단단하게 만들었다">
-                        <label for="impact_stronger">나를 더 단단하게 만들었다</label>
-                    </div>
-                    <div class="checkbox-item">
-                        <input type="checkbox" id="impact_unknown" value="아직 잘 모르겠다">
-                        <label for="impact_unknown">아직 잘 모르겠다</label>
-                    </div>
-                </div>
+                 <div id="intrusive_no_input" style="display: none;">
+                     <h3>☀️ 의도적 반추 (침습 여부 무관하게 작성)</h3>
+                     <div class="quote-box">
+                         <textarea placeholder="그 경험을 떠올리며 나는 (감정)을 다시 마주한다.&#10;그 결과 나는 ___을 배웠다 / 깨달았다 / 다르게 느끼게 되었다.&#10;&#10;위 형식을 참고하여 그 경험의 의미를 작성해보세요."></textarea>
+                     </div>
+                 </div>
+
+                 <h3>그리고 그 사건은 지금의 내 삶에서:</h3>
+                 <div class="checkbox-group">
+                     <div class="checkbox-item">
+                         <input type="checkbox" id="impact_none" value="아무런 영향도 없다">
+                         <label for="impact_none">▷ 아무런 영향도 없다.</label>
+                     </div>
+                     <div class="checkbox-item">
+                         <input type="checkbox" id="impact_direction" value="여전히 종종 떠오르며 방향을 바꾼다">
+                         <label for="impact_direction">▷ 여전히 종종 떠오르며 방향을 바꾼다.</label>
+                     </div>
+                     <div class="checkbox-item">
+                         <input type="checkbox" id="impact_stronger" value="나를 더 단단하게 만들었다">
+                         <label for="impact_stronger">▷ 나를 더 단단하게 만들었다.</label>
+                     </div>
+                     <div class="checkbox-item">
+                         <input type="checkbox" id="impact_unknown" value="아직 잘 모르겠다">
+                         <label for="impact_unknown">▷ 아직 잘 모르겠다.</label>
+                     </div>
+                 </div>
             </div>
 
             <!-- 4. 욕망 및 꿈 -->
